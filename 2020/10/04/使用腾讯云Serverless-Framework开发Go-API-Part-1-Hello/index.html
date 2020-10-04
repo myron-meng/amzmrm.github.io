@@ -1,4 +1,94 @@
-<!DOCTYPE html><html lang="zh"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="stylesheet" href="/css/post.css"><link rel="icon" href="/img/favicon.png"><title>使用腾讯云Serverless Framework开发Go API - Part 1 - Hello</title><meta name="generator" content="Hexo 5.2.0"></head><body>　　<div class="inner"><h2>使用腾讯云Serverless Framework开发Go API - Part 1 - Hello</h2><p>[TOC]</p>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>使用腾讯云Serverless Framework开发Go API - Part 1 - Hello | 破障</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="[TOC] 使用腾讯云Serverless Framework开发Go API - Part 1 - Hello先贴上最后能工作的代码。首先，按照说明，安装Serverless Framework，我是通过npm去安装： [lang:sh] [title] [url] [link text]1npm install -g serverless  1npm install -g serverless">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用腾讯云Serverless Framework开发Go API - Part 1 - Hello">
+<meta property="og:url" content="http://example.com/2020/10/04/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91Serverless-Framework%E5%BC%80%E5%8F%91Go-API-Part-1-Hello/index.html">
+<meta property="og:site_name" content="破障">
+<meta property="og:description" content="[TOC] 使用腾讯云Serverless Framework开发Go API - Part 1 - Hello先贴上最后能工作的代码。首先，按照说明，安装Serverless Framework，我是通过npm去安装： [lang:sh] [title] [url] [link text]1npm install -g serverless  1npm install -g serverless">
+<meta property="og:locale">
+<meta property="article:published_time" content="2020-10-04T06:17:53.000Z">
+<meta property="article:modified_time" content="2020-10-04T06:52:50.000Z">
+<meta property="article:author" content="Myron Meng">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="破障" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">破障</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-使用腾讯云Serverless-Framework开发Go-API-Part-1-Hello" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2020/10/04/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91Serverless-Framework%E5%BC%80%E5%8F%91Go-API-Part-1-Hello/" class="article-date">
+  <time datetime="2020-10-04T06:17:53.000Z" itemprop="datePublished">2020-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用腾讯云Serverless Framework开发Go API - Part 1 - Hello
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>[TOC]</p>
 <h1 id="使用腾讯云Serverless-Framework开发Go-API-Part-1-Hello"><a href="#使用腾讯云Serverless-Framework开发Go-API-Part-1-Hello" class="headerlink" title="使用腾讯云Serverless Framework开发Go API - Part 1 - Hello"></a>使用腾讯云Serverless Framework开发Go API - Part 1 - Hello</h1><p>先贴上最后能工作的代码。首先，按照<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/1154/42990">说明</a>，安装Serverless Framework，我是通过npm去安装：</p>
 <figure class="highlight plain"><figcaption><span>[lang:sh] [title] [url] [link text]</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g serverless</span><br></pre></td></tr></table></figure>
 
@@ -29,4 +119,96 @@
 <li>serverless.yml的inputs.handler字段。应该使用打包出来的二进制的名字，对应到上面的例子，就是应该填tryserverless。在Node.js或者Python这些示例代码里，填的是函数名。Go语言的话，因为Serverless Framework使用的是二进制文件，所以填的应该是二进制文件名。</li>
 </ol>
 <p>就这样，第一个Serverless API就完成了。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">code snippet</span><br></pre></td></tr></table></figure></div><script src="/js/jquery.min.js"></script><script src="/js/main.js"></script></body></html>
+<figure class="highlight plain"><figcaption><span>[title] [lang:go] [url] [link text] [additional options]</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">code snippet</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/10/04/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91Serverless-Framework%E5%BC%80%E5%8F%91Go-API-Part-1-Hello/" data-id="ckfureltq000119pg50cc1ltw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/10/04/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91Serverless-Framework%E5%BC%80%E5%8F%91Go-API-Part-1-Hello/">使用腾讯云Serverless Framework开发Go API - Part 1 - Hello</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 Myron Meng<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
