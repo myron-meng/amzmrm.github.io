@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="在开发API的时候总是要使用到数据库，使用数据库时我们也就自然而然要面临这些问题：  如何migrate数据库schema Go应用如何操作数据  这里分享一下我心中的最佳实践方式。 Migration首先列举一下我们可以完成数据库migration的方法：  手动维护 借助ORM框架自动migrate 使用migrate工具  手动维护是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不">
+  <meta name="description" content="在开发API的时候总是要使用到数据库，使用数据库时我们总要面临这些问题：  如何migrate数据库schema Go应用如何操作数据  这里分享我喜欢的实践方式。 Migration首先列举一下我们可以完成数据库shema migration的方法：  手动维护 借助ORM框架 使用migrate工具  手动维护手动维护是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不入的。原因一是手">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用Go语言开发API时，我喜欢的一个跟数据库打交道的方案">
 <meta property="og:url" content="http://example.com/2021/01/10/%E4%BD%BF%E7%94%A8Go%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91API%E6%97%B6%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%9A%84%E4%B8%80%E4%B8%AA%E8%B7%9F%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%93%E4%BA%A4%E9%81%93%E7%9A%84%E6%96%B9%E6%A1%88/index.html">
 <meta property="og:site_name" content="破障">
-<meta property="og:description" content="在开发API的时候总是要使用到数据库，使用数据库时我们也就自然而然要面临这些问题：  如何migrate数据库schema Go应用如何操作数据  这里分享一下我心中的最佳实践方式。 Migration首先列举一下我们可以完成数据库migration的方法：  手动维护 借助ORM框架自动migrate 使用migrate工具  手动维护是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不">
+<meta property="og:description" content="在开发API的时候总是要使用到数据库，使用数据库时我们总要面临这些问题：  如何migrate数据库schema Go应用如何操作数据  这里分享我喜欢的实践方式。 Migration首先列举一下我们可以完成数据库shema migration的方法：  手动维护 借助ORM框架 使用migrate工具  手动维护手动维护是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不入的。原因一是手">
 <meta property="og:locale">
 <meta property="article:published_time" content="2021-01-10T09:06:47.000Z">
-<meta property="article:modified_time" content="2021-01-10T09:10:29.496Z">
+<meta property="article:modified_time" content="2021-01-10T12:20:38.314Z">
 <meta property="article:author" content="Myron Meng">
 <meta name="twitter:card" content="summary">
 
@@ -175,7 +175,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2021-01-10 17:06:47 / Modified: 17:10:29" itemprop="dateCreated datePublished" datetime="2021-01-10T17:06:47+08:00">2021-01-10</time>
+              <time title="Created: 2021-01-10 17:06:47 / Modified: 20:20:38" itemprop="dateCreated datePublished" datetime="2021-01-10T17:06:47+08:00">2021-01-10</time>
             </span>
 
           
@@ -189,29 +189,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>在开发API的时候总是要使用到数据库，使用数据库时我们也就自然而然要面临这些问题：</p>
+        <p>在开发API的时候总是要使用到数据库，使用数据库时我们总要面临这些问题：</p>
 <ol>
 <li>如何migrate数据库schema</li>
 <li>Go应用如何操作数据</li>
 </ol>
-<p>这里分享一下我心中的最佳实践方式。</p>
-<h2 id="Migration"><a href="#Migration" class="headerlink" title="Migration"></a>Migration</h2><p>首先列举一下我们可以完成数据库migration的方法：</p>
+<p>这里分享我喜欢的实践方式。</p>
+<h2 id="Migration"><a href="#Migration" class="headerlink" title="Migration"></a>Migration</h2><p>首先列举一下我们可以完成数据库shema migration的方法：</p>
 <ol>
 <li>手动维护</li>
-<li>借助ORM框架自动migrate</li>
+<li>借助ORM框架</li>
 <li>使用migrate工具</li>
 </ol>
-<h3 id="手动维护"><a href="#手动维护" class="headerlink" title="手动维护"></a><strong>手动维护</strong></h3><p>是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不入的。一是手动维护本身繁琐、容易出错；而是操作起来也困难，因为数据库不会提供外网访问入口，我们要访问到数据库只能通过PHPMyAdmin之类的工具，而这些工具的易用程度、功能都差强人意。</p>
-<h3 id="借助ORM框架自动migrate"><a href="#借助ORM框架自动migrate" class="headerlink" title="借助ORM框架自动migrate"></a><strong>借助ORM框架自动migrate</strong></h3><p>可以相比手动维护有一定的优势，比如使用Gorm我们可以这样完成migrate:</p>
+<h3 id="手动维护"><a href="#手动维护" class="headerlink" title="手动维护"></a><strong>手动维护</strong></h3><p>手动维护是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不入的。原因一是手动维护本身繁琐、容易出错；而是操作起来也困难，因为数据库不会提供外网访问入口，我们要访问到数据库只能通过PHPMyAdmin之类的工具，而这些工具的易用程度、功能都差强人意。</p>
+<h3 id="借助ORM框架自动migrate"><a href="#借助ORM框架自动migrate" class="headerlink" title="借助ORM框架自动migrate"></a><strong>借助ORM框架自动migrate</strong></h3><p>相比手动维护有一定的优势，比如使用Gorm我们可以这样完成migration:</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.AutoMigrate(&amp;User&#123;&#125;)</span><br></pre></td></tr></table></figure>
 
-<p>相比书写完整的SQL，我们只需要学习ORM的使用方式，在struct tag里定义好即可（甚至可以不书写tag，Gorm有默认的名字方式，对应到数据库表字段名），而且我们的Go应用本身就是一个能访问数据库的程序，让它完成migrate也顺理成章我们无需引入更多的工具。</p>
-<p>但是借助ORM框架自动migrate也有其弊端：</p>
+<p>相比书写完整的SQL，我们只需要学习ORM的规则，在struct tag里定义好即可（甚至可以不书写tag，ORM会有其默认的对应到数据库表字段名的命名方式），而且我们的Go应用本身就是一个能访问数据库的程序，让它完成migration也顺理成章，我们无需引入更多的工具。</p>
+<p>但是借助ORM自动migrate也有其弊端：</p>
 <ol>
-<li>我们要学习2套规则：SQL语法和ORM的migrate定义，并且要让他们保持一致和同步，我们最好不要中途换个ORM</li>
-<li>如果我们的应用是多实例的，多实例应用在部署时都需要重启，多个实例争相migrate显然是要避免的，由哪个示例去执行migrate呢？使用数据库锁吗？但我们本就不该让竞争发生呀。</li>
-<li>好的，你说我们的应用有一个daemon示例，daemon是单实例，这样子就不会有竞争了。没有竞争了是事实，但是如果在部署的时候migrate失败了如何回退呢？即使是在开发阶段失败了，我们也只能手动去数据库里回退，这又带来了繁琐的手动操作，增加了误操作的风险。</li>
-<li>数据库shema的migration没有版本化，没有演进流程。</li>
+<li>我们要学习2套规则：SQL语法和ORM的migration规则，并且要让他们保持一致和同步，我们最好不要中途换个ORM</li>
+<li>如何避免多实例应用争相migrate呢？由哪个示例去执行migrate呢？使用数据库锁吗？但我们本就不该让竞争发生呀！</li>
+<li>好的，假设我们的应用有一个daemon示例，daemon是单实例，这样子就不会有竞争了。但我们还面临另一个问题：如果在实例重启的时候migrate失败了如何回退呢？我们也只能去数据库手动回退，这又带来了繁琐的手动操作，增加了误操作的风险。</li>
+<li>数据库shema的migration没有版本化，没有保留schema的演进过程。</li>
 </ol>
 <h3 id="使用migrate工具"><a href="#使用migrate工具" class="headerlink" title="使用migrate工具"></a>使用migrate工具</h3><p>鉴于以上方式都有种种弊端，所以市场上有了migration工具给我们使用。比如：</p>
 <ol>
@@ -222,23 +222,23 @@
 <p>首先编写migrate文件：</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1_create_user_table.up.sql</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="keyword">users</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> AUTO_INCREMENT PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    first_name <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    last_name <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    bio <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="literal">NULL</span>,</span><br><span class="line">    headline <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="literal">NULL</span>,</span><br><span class="line">    created_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    updated_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    deleted_at <span class="built_in">TIMESTAMP</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1_create_user_table.down.sql</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`users`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2_create_transactions_table.up.sql</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> transactions</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> AUTO_INCREMENT PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    user_id <span class="built_in">BIGINT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    created_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    updated_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    deleted_at <span class="built_in">TIMESTAMP</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2_create_transactions_table.down.sql</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`transactions`</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<p>migrate要求我们每个migration都要有up和down，up用户将数据库schema从一个版本migrate到另一个版本，down用户回退改版本。</p>
+<p>migrate要求我们为每个migration都要有up和down文件，up文件将数据库schema从一个版本migrate到另一个版本（版本升级），down文件回退该版本（版本降级）。</p>
 <p>接着执行migrate：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> sql</span><br><span class="line"><span class="comment"># 把user_name、password和db_name替换成你自己的</span></span><br><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> up</span><br><span class="line">1/u create_users_table (38.456467ms)</span><br><span class="line">2/u create_transactions_table (79.320577ms)</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">❯ <span class="built_in">cd</span> sql</span><br><span class="line"><span class="comment"># 把user_name、password和db_name替换成你自己的</span></span><br><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> up</span><br><span class="line">1/u create_users_table (38.456467ms)</span><br><span class="line">2/u create_transactions_table (79.320577ms)</span><br></pre></td></tr></table></figure>
 
 <p>就这样，我们的数据库schema就migrate完毕了！</p>
 <p>如果你要回退：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> down 1</span><br><span class="line">2/d create_transactions_table (12.098781ms)</span><br></pre></td></tr></table></figure>
 
-<p><code>down 1</code>表示回退一个版本。当前版本是2，因此回退要做的工作就是执行version=2的down文件，因此<code>transactions</code>表会被删除。慎用！</p>
-<p>使用migrate工具日常的开发流程就是先：</p>
+<p><code>down 1</code>表示回退一个版本。当前版本是2，因此回退要做的工作就是执行version=2的down文件，因此<code>transactions</code>表会被删除，慎用！</p>
+<p>使用migrate工具日常的开发流程：</p>
 <ol>
 <li>在sql目录下定义好表结构，也就是书写migration文件</li>
 <li>执行migrate</li>
 <li>代码编写完毕</li>
 <li>将migrate文件和代码一起提交</li>
 </ol>
-<p>另外一个好的实践是把migrate放到CI/CD流程，code test → 打包镜像 → DB migrate → Deploy，这样就不用人工参与。</p>
+<p>另外一个好的实践是把数据库migration放到CI/CD流程，code push → code analysis → code test → 打包镜像 → DB migration → Deploy，这样就不用人工参与。</p>
 <h2 id="ORM"><a href="#ORM" class="headerlink" title="ORM"></a>ORM</h2><p>好了，现在来讨论Go如何操作数据库。还是先列举一下有哪些方式：</p>
 <ol>
 <li>database/sql</li>
@@ -248,12 +248,12 @@
 <p>我偏向尽可能少在Go代码里写SQL，因为：</p>
 <ol>
 <li>虽然简单但要非常频繁去书写，效率不高，看起来不够优雅</li>
-<li>编辑器/IDE没有高亮、补全等功能，你需要记住非常精确第记住数据库schema，否则非常容易有单词拼写错误等问题</li>
+<li>编辑器/IDE没有高亮、补全等功能，你需要记住非常准确地记住数据库schema，否则非常容易有单词拼写错误等问题</li>
 </ol>
-<p>因此我会跳过第1、2个方式，从ORM里选择了SQLBoiler（Kallax只适用于PostgreSQL，Xorm没有尝试过）。</p>
+<p>因此我会跳过第1、2种方式，从ORM里选择了SQLBoiler（Kallax只适用于PostgreSQL，Xorm没有尝试过）。</p>
 <p>之所以选择SQLBoiler而不是Gorm，是因为SQLBoiler的理念和我要达到的目标吻合：</p>
 <ol>
-<li>schema first。SQLBoiler要求你先有一个数据库schema，然后使用代码生成的方式基于数据库schema生成ORM代码。数据库schema不就是我们前面使用migrate工具生成的么？</li>
+<li>schema first。SQLBoiler要求你先有一个数据库schema，然后使用代码生成的方式基于数据库schema生成ORM代码。数据库schema可以使用migration工具。</li>
 <li>Gorm还是会出现经常要你书写SQL的情况，比如：db.Model(&amp;User{}).Where(“active = ?”, true).Update(“name”, “hello”)，没有一个变量供你引用字段name，你得以字符串的方式传参告诉它要更新name字段。这其实是书写SQL语句的最小化版本，只不过我们不用书写整句而是一个字段。</li>
 <li>性能比gorm好。详细参见<a target="_blank" rel="noopener" href="https://github.com/volatiletech/sqlboiler#benchmarks">Benchmarks</a></li>
 </ol>
