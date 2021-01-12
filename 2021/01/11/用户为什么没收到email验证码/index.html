@@ -29,7 +29,7 @@
 <meta property="og:locale">
 <meta property="og:image" content="http://example.com/images/image-20210111233418375.png">
 <meta property="article:published_time" content="2021-01-11T12:36:26.000Z">
-<meta property="article:modified_time" content="2021-01-11T14:58:44.411Z">
+<meta property="article:modified_time" content="2021-01-12T00:13:28.575Z">
 <meta property="article:author" content="Myron Meng">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/images/image-20210111233418375.png">
@@ -175,10 +175,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2021-01-11 20:36:26 / Modified: 22:58:44" itemprop="dateCreated datePublished" datetime="2021-01-11T20:36:26+08:00">2021-01-11</time>
+              <time title="Created: 2021-01-11 20:36:26" itemprop="dateCreated datePublished" datetime="2021-01-11T20:36:26+08:00">2021-01-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2021-01-12 08:13:28" itemprop="dateModified" datetime="2021-01-12T08:13:28+08:00">2021-01-12</time>
+              </span>
 
           
 
@@ -198,7 +204,7 @@
 <p>项目使用<a target="_blank" rel="noopener" href="https://github.com/RichardKnop/machinery">machinery</a> 这个异步任务库去发送email，每次有发送email的需求时都是提交一个task给machinery，然后machinery会异步执行email发送任务。email success count没跟上new email task count也就是在5:30开始后一段时间内machinery没有消耗email task，过了一段时间后（～半个小时）才开始正常消费task，最后email都发送成功了。</p>
 <p>到目前为止我们已经清楚了问题的所在：用户请求一个email验证码，我们也都发送成功了，只不过是我们过了若干分钟后才发送出去。验证码email实时性要求非常高，点击发送后就要立马就收到email，晚1～2min对客户来说就是没发送。这应验了一个道理：用户反映的问题不一定能直击你问题或者bug的所在，有时候你需要思考用户遇到的bug是不是另一个bug引发的。</p>
 <p>既然问题是machinery没有及时消耗email task，那它为什么没有按照我们期待的方式去工作呢？找到启动machinery worker的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LaunchWorker read tasks from broker and process</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	consumerTag := <span class="string">&quot;machinery_worker&quot;</span></span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewWorker(consumerTag, env.GetWorkerConcurrency())</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logger.Error(err)</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// GetWorkerConcurrency returns machinery worker concurrency</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetWorkerConcurrency</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> parseIntEnv(<span class="string">&quot;WORKER_CONCURRENCY&quot;</span>, <span class="number">10</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LaunchWorker read tasks from broker and process</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	consumerTag := <span class="string">&quot;machinery_worker&quot;</span></span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewWorker(consumerTag, env.GetWorkerConcurrency())</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// GetWorkerConcurrency returns machinery worker concurrency</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetWorkerConcurrency</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> parseIntEnv(<span class="string">&quot;WORKER_CONCURRENCY&quot;</span>, <span class="number">10</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>发现machinery worker的concurrency=10，且整个应用只有一个worker，这就意味着worker以concurrency=10的速度去消费所有的task。而事发时线上有个举办方在举行一个参会人数～2000人的大会，会议时使用到了某个feature，这个feature会以异步的方式去为这2000人中参会的人生成个性化内容，每个task都是非常耗时、消耗资源的，最终就导致了email task排了很久的队才被执行。</p>
 <p>这就是《亿级流量网站架构核心技术》<strong>隔离术</strong>所描述的：如果一个功能对你来说非常重要，那么你就要把它跟其它功能隔离开来，给它分配它独享的线程资源，让当其它功能在资源不足时也无法抢占你最重要的功能的独享资源。</p>
@@ -233,9 +239,9 @@
 
 <p>总结以下解决问题的思路：</p>
 <ol>
+<li>异步任务由原来的单一worker扩展为多worker，将email task和非email task隔离</li>
 <li>提高每个worker的concurrency，比如提高到30</li>
-<li>异步任务由原来的单一worker扩展为多worker并将email task和非email task隔离</li>
-<li>将时延敏感型email task和非时延敏感型email task隔离，新增high priority email worker和default priority email worker；并且使用不同的Rate limit。为什么email也要划分得这么细呢？因为email服务依赖AWS SES，发送email也有速率限制，比如目前最高每秒80封邮件。如果用户的验证码邮件刚好排在紧密循环型邮件功能的后面，比如host给有5000个attendee的event broadcast email，那么验证码邮件需要等待5000/60=62.5秒左右才收到email，时延敏感型的邮件没有即时送达就会被用户视为没有送达。</li>
+<li>将时延敏感型email task和非时延敏感型email task隔离：使用不同的queue和worker，并且使用不同的rate limit。为什么rate limit也要划分得这么细呢？因为email服务使用的是AWS SES，AWS SES发送email有账户级别的速率限制，比如最高每秒80封邮件。如果用户的验证码邮件刚好排在紧密循环型邮件功能的后面，比如host给有5000个attendee的event发送广播邮件，那么验证码邮件需要等待5000/60=62.5秒左右才收到email，时延敏感型的邮件没有即时送达就会被用户视为没有送达。</li>
 </ol>
 
     </div>
