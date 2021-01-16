@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="破除一切障碍">
@@ -26,7 +26,7 @@
 <meta property="og:url" content="http://example.com/index.html">
 <meta property="og:site_name" content="破障">
 <meta property="og:description" content="破除一切障碍">
-<meta property="og:locale">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="Myron Meng">
 <meta property="article:tag" content="Go后端工程师 Go语言">
 <meta name="twitter:card" content="summary">
@@ -40,7 +40,7 @@
     sidebar: "",
     isHome : true,
     isPost : false,
-    lang   : 'zh'
+    lang   : 'zh-CN'
   };
 </script>
 
@@ -84,7 +84,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -114,12 +114,27 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -148,7 +163,7 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/11/%E7%94%A8%E6%88%B7%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B2%A1%E6%94%B6%E5%88%B0email%E9%AA%8C%E8%AF%81%E7%A0%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -171,16 +186,16 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2021-01-11 20:36:26" itemprop="dateCreated datePublished" datetime="2021-01-11T20:36:26+08:00">2021-01-11</time>
+              <time title="创建时间：2021-01-11 20:36:26" itemprop="dateCreated datePublished" datetime="2021-01-11T20:36:26+08:00">2021-01-11</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2021-01-12 08:17:50" itemprop="dateModified" datetime="2021-01-12T08:17:50+08:00">2021-01-12</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-16 12:11:10" itemprop="dateModified" datetime="2021-01-16T12:11:10+08:00">2021-01-16</time>
               </span>
 
           
@@ -196,51 +211,14 @@
       
           <p>客户服务部门反映有不少用户抱怨没收到email验证码，并提供了抱怨用户的email list。</p>
 <p>这个bug分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外email都发送成功了。再去Grafana看看：</p>
-<p><img src="/images/image-20210111233418375.png"></p>
-<p>可以看到大概从5:30开始，email success count就没跟上new email task count。</p>
-<p>项目使用<a target="_blank" rel="noopener" href="https://github.com/RichardKnop/machinery">machinery</a> 这个异步任务库去发送email，每次有发送email的需求时都是提交一个task给machinery，然后machinery会异步执行email发送任务。email success count没跟上new email task count也就是在5:30开始后一段时间内machinery没有消耗email task，过了一段时间后（～半个小时）才开始正常消费task，最后email都发送成功了。</p>
-<p>到目前为止我们已经清楚了问题的所在：用户请求一个email验证码，我们也都发送成功了，只不过是我们过了若干分钟后才发送出去。验证码email实时性要求非常高，点击发送后就要立马就收到email，晚1～2min对客户来说就是没发送。这应验了一个道理：用户反映的问题不一定能直击你问题或者bug的所在，有时候你需要思考用户遇到的bug是不是另一个bug引发的。</p>
-<p>既然问题是machinery没有及时消耗email task，那它为什么没有按照我们期待的方式去工作呢？找到启动machinery worker的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LaunchWorker read tasks from broker and process</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	consumerTag := <span class="string">&quot;machinery_worker&quot;</span></span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewWorker(consumerTag, env.GetWorkerConcurrency())</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// GetWorkerConcurrency returns machinery worker concurrency</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetWorkerConcurrency</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> parseIntEnv(<span class="string">&quot;WORKER_CONCURRENCY&quot;</span>, <span class="number">10</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>发现machinery worker的concurrency=10，且整个应用只有一个worker，这就意味着worker以concurrency=10的速度去消费所有的task。而事发时线上有个举办方在举行一个参会人数～2000人的大会，会议时使用到了某个feature，这个feature会以异步的方式去为这2000人中参会的人生成个性化内容，每个task都是非常耗时、消耗资源的，最终就导致了email task排了很久的队才被执行。</p>
-<p>这就是《亿级流量网站架构核心技术》<strong>隔离术</strong>所描述的：如果一个功能对你来说非常重要，那么你就要把它跟其它功能隔离开来，给它分配它独享的线程资源，让当其它功能在资源不足时也无法抢占你最重要的功能的独享资源。</p>
-<p>既然导致bug的原因已经很清楚了，那么在这个具体场景下解决方式就是利用machinery的<code>RoutingKey</code>：</p>
-<blockquote>
-<p>RoutingKey is used for routing a task to correct queue. If you leave it empty, the default behavior will be to set it to the default queue’s binding key for direct exchange type and to the default queue name for other exchange types.</p>
-</blockquote>
-<p>给email task指定一个RoutingKey，这样task会被push到一个独有的queue，然后另起一个worker专门负责消费这个queue里的task：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">emailTask := tasks.Signature&#123;</span><br><span class="line">    RoutingKey:   <span class="string">&quot;email_task_queue&quot;</span>, <span class="comment">// 指定email专用的queue</span></span><br><span class="line">    Name:         <span class="string">&quot;email_task&quot;</span>,</span><br><span class="line">    RetryCount:   taskRetryCount,</span><br><span class="line">    RetryTimeout: taskRetryTimeout,</span><br><span class="line">    Args: []tasks.Arg&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动一个email专用的worker</span></span><br><span class="line"><span class="comment">// LaunchEmailWorker starts worker for emails</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchEmailWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	routingKey := <span class="string">&quot;email_task_queue&quot;</span></span><br><span class="line">	concurrency := <span class="number">10</span></span><br><span class="line">	<span class="keyword">if</span> env.GetDefaultEmailWorkerConcurrency() != <span class="number">0</span> &#123;</span><br><span class="line">		concurrency = env.GetDefaultEmailWorkerConcurrency()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewCustomQueueWorker(</span><br><span class="line">		<span class="string">&quot;email_task_worker&quot;</span>, </span><br><span class="line">		concurrency, </span><br><span class="line">		routingKey,</span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>好了，现在应该没有问题了。有人可能会问，既然email服务那么重要，那为什么不拆成单独的服务呢？因为架构是慢慢演进的，之前实现email功能的同学他为什么没有这样做呢？他并不是没想到，而是因为没必要！我看到代码首次实现还是使用channel实现的，后来才演进成使用machinery（可能是因为实例重启后email task又丢失了 XD）。</p>
-<p>那现在我可以push代码提MR了吧？再等等，因为我发现还可以做得更好，现在已经不是项目刚启动时那么赶了，那就再做完善一点吧。</p>
-<p>我发现项目的email大概有这几种类型：</p>
-<ol>
-<li>时延敏感型：email一旦延迟了，就会给用户造成邮件没送达的体验，比如验证码、订单确认</li>
-<li>零散型：由随机的行为触发，或者是只给有限数目的目标用户发送的，比如票售完了通知活动举办方</li>
-<li>紧密循环型：满足需要发送邮件的条件后，需要给大量的用户发送邮件（我们平台存在有超过5000人的活动），而一定时间内的发送邮件的数量/速率是有限制的（这是email服务AWS SES的限制，整个AWS账户发送email的速率只能是70封/s），因此如果不做控制可能会导致其它邮件排队时间太久而被延迟了</li>
-</ol>
-<p>那接下来做什么呢？我的规划是因为公司的AWS账户只能以70封/s的峰值速率发送，因此我会给我们的多个部署环境重新分配这宝贵的资源：</p>
-<ol>
-<li>dev：分配5/70</li>
-<li>staging：分配5</li>
-<li>prod：分配60/70</li>
-</ol>
-<p>然后，再按比例分给不同类型的email：</p>
-<ol>
-<li>时延敏感型：配额的一半</li>
-<li>非时延敏感型（暂不进一步划分零散型和紧密循环型）：配额的一半</li>
-</ol>
-<p>具体的编码具体是这样：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">higtPriorityEmailTask := tasks.Signature&#123;</span><br><span class="line">    RoutingKey:   <span class="string">&quot;high_priority_email_task&quot;</span>,</span><br><span class="line">    Name:         <span class="string">&quot;high_priority_email&quot;</span>,</span><br><span class="line">    RetryCount:   taskRetryCount,</span><br><span class="line">    RetryTimeout: taskRetryTimeout,</span><br><span class="line">    Args: []tasks.Arg&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// LaunchHighPriorityEmailWorker starts worker for high priority emails</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchHighPriorityEmailWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	routingKey := <span class="string">&quot;high_priority_email_task&quot;</span></span><br><span class="line">	concurrency := <span class="number">10</span></span><br><span class="line">	<span class="keyword">if</span> env.GetHighEmailWorkerConcurrency() != <span class="number">0</span> &#123;</span><br><span class="line">		concurrency = env.GetHightEmailWorkerConcurrency()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewCustomQueueWorker(</span><br><span class="line">		<span class="string">&quot;high_priority_email_queue&quot;</span>, </span><br><span class="line">		concurrency, </span><br><span class="line">		routingKey,</span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">defaultPriorityEmailTask := tasks.Signature&#123;</span><br><span class="line">    RoutingKey:   <span class="string">&quot;default_priority_email_task&quot;</span>,</span><br><span class="line">    Name:         <span class="string">&quot;default_priority_email&quot;</span>,</span><br><span class="line">    RetryCount:   taskRetryCount,</span><br><span class="line">    RetryTimeout: taskRetryTimeout,</span><br><span class="line">    Args: []tasks.Arg&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// LaunchDefaultPriorityEmailWorker starts worker for default priority emails</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchDefaultPriorityEmailWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	routingKey := <span class="string">&quot;default_priority_email_task&quot;</span></span><br><span class="line">	concurrency := <span class="number">10</span></span><br><span class="line">	<span class="keyword">if</span> env.GetDefaultEmailWorkerConcurrency() != <span class="number">0</span> &#123;</span><br><span class="line">		concurrency = env.GetDefaultEmailWorkerConcurrency()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewCustomQueueWorker(</span><br><span class="line">		<span class="string">&quot;default_priority_email_queue&quot;</span>, </span><br><span class="line">		concurrency, </span><br><span class="line">		routingKey,</span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>总结以下解决问题的思路：</p>
-<ol>
-<li>异步任务由原来的单一worker扩展为多worker，将email task和非email task隔离</li>
-<li>提高每个worker的concurrency，比如提高到30</li>
-<li>将时延敏感型email task和非时延敏感型email task隔离：使用不同的queue和worker，并且使用不同的rate limit。为什么rate limit也要划分得这么细呢？因为email服务使用的是AWS SES，AWS SES发送email有账户级别的速率限制，比如最高每秒80封邮件。如果用户的验证码邮件刚好排在紧密循环型邮件功能的后面，比如host给有5000个attendee的event发送广播邮件，那么验证码邮件需要等待5000/60=62.5秒左右才收到email，时延敏感型的邮件没有即时送达就会被用户视为没有送达。</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/11/%E7%94%A8%E6%88%B7%E4%B8%BA%E4%BB%80%E4%B9%88%E6%B2%A1%E6%94%B6%E5%88%B0email%E9%AA%8C%E8%AF%81%E7%A0%81/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -258,7 +236,7 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/10/%E4%BD%BF%E7%94%A8Go%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91API%E6%97%B6%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%9A%84%E4%B8%80%E4%B8%AA%E8%B7%9F%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%93%E4%BA%A4%E9%81%93%E7%9A%84%E6%96%B9%E6%A1%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -281,11 +259,17 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2021-01-10 17:06:47 / Modified: 20:27:32" itemprop="dateCreated datePublished" datetime="2021-01-10T17:06:47+08:00">2021-01-10</time>
+              <time title="创建时间：2021-01-10 17:06:47" itemprop="dateCreated datePublished" datetime="2021-01-10T17:06:47+08:00">2021-01-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-16 12:09:15" itemprop="dateModified" datetime="2021-01-16T12:09:15+08:00">2021-01-16</time>
+              </span>
 
           
 
@@ -304,76 +288,14 @@
 <li>Go应用如何操作数据</li>
 </ol>
 <p>这里分享我喜欢的实践方式。</p>
-<h2 id="Migration"><a href="#Migration" class="headerlink" title="Migration"></a>Migration</h2><p>首先列举一下我们可以完成数据库shema migration的方法：</p>
-<ol>
-<li>手动维护</li>
-<li>借助ORM框架</li>
-<li>使用migrate工具</li>
-</ol>
-<h3 id="手动维护"><a href="#手动维护" class="headerlink" title="手动维护"></a><strong>手动维护</strong></h3><p>手动维护是最原始的方式，跟现在一切都追求自动化的软件开发模式是格格不入的。原因一是手动维护本身繁琐、容易出错；而是操作起来也困难，因为数据库不会提供外网访问入口，我们要访问到数据库只能通过PHPMyAdmin之类的工具，而这些工具的易用程度、功能都差强人意。</p>
-<h3 id="借助ORM框架自动migrate"><a href="#借助ORM框架自动migrate" class="headerlink" title="借助ORM框架自动migrate"></a><strong>借助ORM框架自动migrate</strong></h3><p>相比手动维护有一定的优势，比如使用Gorm我们可以这样完成migration:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.AutoMigrate(&amp;User&#123;&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>相比书写完整的SQL，我们只需要学习ORM的规则，在struct tag里定义好即可（甚至可以不书写tag，ORM会有其默认的对应到数据库表字段名的命名方式），而且我们的Go应用本身就是一个能访问数据库的程序，让它完成migration也顺理成章，我们无需引入更多的工具。</p>
-<p>但是借助ORM自动migrate也有其弊端：</p>
-<ol>
-<li>我们要学习2套规则：SQL语法和ORM的migration规则，并且要让他们保持一致和同步，我们最好不要中途换个ORM</li>
-<li>如何避免多实例应用争相migrate呢？由哪个示例去执行migrate呢？使用数据库锁吗？但我们本就不该让竞争发生呀！</li>
-<li>好的，假设我们的应用有一个daemon示例，daemon是单实例，这样子就不会有竞争了。但我们还面临另一个问题：如果在实例重启的时候migrate失败了如何回退呢？我们也只能去数据库手动回退，这又带来了繁琐的手动操作，增加了误操作的风险。</li>
-<li>数据库shema的migration没有版本化，没有保留schema的演进过程。</li>
-</ol>
-<h3 id="使用migrate工具"><a href="#使用migrate工具" class="headerlink" title="使用migrate工具"></a>使用migrate工具</h3><p>鉴于以上方式都有种种弊端，所以市场上有了migration工具给我们使用。比如：</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://flywaydb.org/">Flyway</a></li>
-<li><a target="_blank" rel="noopener" href="https://github.com/golang-migrate/migrate">migrate</a></li>
-</ol>
-<p>这里以migrate为例。</p>
-<p>首先编写migrate文件：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1_create_user_table.up.sql</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="keyword">users</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> AUTO_INCREMENT PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    first_name <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    last_name <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    bio <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="literal">NULL</span>,</span><br><span class="line">    headline <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="literal">NULL</span>,</span><br><span class="line">    created_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    updated_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    deleted_at <span class="built_in">TIMESTAMP</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1_create_user_table.down.sql</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`users`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2_create_transactions_table.up.sql</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> transactions</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> AUTO_INCREMENT PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    user_id <span class="built_in">BIGINT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    created_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    updated_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    deleted_at <span class="built_in">TIMESTAMP</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2_create_transactions_table.down.sql</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`transactions`</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>migrate要求我们为每个migration都要有up和down文件，up文件将数据库schema从一个版本migrate到另一个版本（版本升级），down文件回退该版本（版本降级）。</p>
-<p>接着执行migrate：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">❯ <span class="built_in">cd</span> sql</span><br><span class="line"><span class="comment"># 把user_name、password和db_name替换成你自己的</span></span><br><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> up</span><br><span class="line">1/u create_users_table (38.456467ms)</span><br><span class="line">2/u create_transactions_table (79.320577ms)</span><br></pre></td></tr></table></figure>
-
-<p>就这样，我们的数据库schema就migrate完毕了！</p>
-<p>如果你要回退：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> down 1</span><br><span class="line">2/d create_transactions_table (12.098781ms)</span><br></pre></td></tr></table></figure>
-
-<p><code>down 1</code>表示回退一个版本。当前版本是2，因此回退要做的工作就是执行version=2的down文件，因此<code>transactions</code>表会被删除，慎用！</p>
-<p>使用migrate工具日常的开发流程：</p>
-<ol>
-<li>在sql目录下定义好表结构，也就是书写migration文件</li>
-<li>执行migrate</li>
-<li>代码编写完毕</li>
-<li>将migrate文件和代码一起提交</li>
-</ol>
-<p>另外一个好的实践是把数据库migration放到CI/CD流程，code push → code analysis → code test → 打包镜像 → DB migration → Deploy，这样就不用人工参与。</p>
-<h2 id="ORM"><a href="#ORM" class="headerlink" title="ORM"></a>ORM</h2><p>好了，现在来讨论Go如何操作数据库。还是先列举一下有哪些方式：</p>
-<ol>
-<li>database/sql</li>
-<li>sqlx</li>
-<li>ORM: <a target="_blank" rel="noopener" href="https://github.com/go-gorm/gorm">Gorm</a>、<a target="_blank" rel="noopener" href="https://github.com/go-xorm/xorm">Xorm</a>、<a target="_blank" rel="noopener" href="https://github.com/volatiletech/sqlboiler">SQLBoiler</a>、<a target="_blank" rel="noopener" href="https://github.com/src-d/go-kallax">Kallax</a></li>
-</ol>
-<p>我偏向尽可能少在Go代码里写SQL，因为：</p>
-<ol>
-<li>虽然简单但要非常频繁去书写，效率不高，看起来不够优雅</li>
-<li>编辑器/IDE没有高亮、补全等功能，你需要记住非常准确地记住数据库schema，否则非常容易有单词拼写错误等问题</li>
-</ol>
-<p>因此我会跳过第1、2种方式，从ORM里选择了SQLBoiler（Kallax只适用于PostgreSQL，Xorm没有尝试过）。</p>
-<p>之所以选择SQLBoiler而不是Gorm，是因为SQLBoiler的理念和我要达到的目标吻合：</p>
-<ol>
-<li>schema first。SQLBoiler要求你先有一个数据库schema，然后使用代码生成的方式基于数据库schema生成ORM代码。数据库schema可以使用migration工具。</li>
-<li>Gorm还是会出现经常要你书写SQL的情况，比如：db.Model(&amp;User{}).Where(“active = ?”, true).Update(“name”, “hello”)，没有一个变量供你引用字段name，你得以字符串的方式传参告诉它要更新name字段。这其实是书写SQL语句的最小化版本，只不过我们不用书写整句而是一个字段。</li>
-<li>性能比gorm好。详细参见<a target="_blank" rel="noopener" href="https://github.com/volatiletech/sqlboiler#benchmarks">Benchmarks</a></li>
-</ol>
-<p>使用SQLBoiler，我们要做的首先是配置好代码生成：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">output   = <span class="string">&quot;model&quot;</span> <span class="comment"># 自定义生成的model代码所在包</span></span><br><span class="line">wipe     = <span class="literal">true</span></span><br><span class="line">no-tests = <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">[mysql]</span><br><span class="line">dbname  = <span class="string">&quot;db_name&quot;</span></span><br><span class="line">host    = <span class="string">&quot;localhost&quot;</span></span><br><span class="line">port    = 3306</span><br><span class="line">user    = <span class="string">&quot;root&quot;</span></span><br><span class="line">pass    = <span class="string">&quot;123456&quot;</span></span><br><span class="line">sslmode = <span class="string">&quot;false&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>然后生成代码：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sqlboiler -p model mysql</span><br></pre></td></tr></table></figure>
-
-<p>这样你需要的操作数据库的代码就生成好了。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/01/10/%E4%BD%BF%E7%94%A8Go%E8%AF%AD%E8%A8%80%E5%BC%80%E5%8F%91API%E6%97%B6%EF%BC%8C%E6%88%91%E5%96%9C%E6%AC%A2%E7%9A%84%E4%B8%80%E4%B8%AA%E8%B7%9F%E6%95%B0%E6%8D%AE%E5%BA%93%E6%89%93%E4%BA%A4%E9%81%93%E7%9A%84%E6%96%B9%E6%A1%88/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -391,7 +313,7 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/07/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91Serverless-Framework%E5%BC%80%E5%8F%91Go-API-Part-1-Hello-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -414,11 +336,17 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2020-10-07 20:37:40 / Modified: 21:05:03" itemprop="dateCreated datePublished" datetime="2020-10-07T20:37:40+08:00">2020-10-07</time>
+              <time title="创建时间：2020-10-07 20:37:40" itemprop="dateCreated datePublished" datetime="2020-10-07T20:37:40+08:00">2020-10-07</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-16 12:10:33" itemprop="dateModified" datetime="2021-01-16T12:10:33+08:00">2021-01-16</time>
+              </span>
 
           
 
@@ -433,32 +361,14 @@
       
           <p>首先，按照<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/1154/42990">说明</a>，安装Serverless Framework，我是通过npm去安装：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g serverless</span><br></pre></td></tr></table></figure>
-
-<p>然后新建一个Go project并新建一下文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tryserverless</span><br><span class="line">├── go.mod</span><br><span class="line">├── go.sum</span><br><span class="line">├── main.go</span><br><span class="line">└── serverless.yml</span><br></pre></td></tr></table></figure>
-
-<p>main.go:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/tencentyun/scf-go-lib/cloudfunction&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> DefineEvent <span class="keyword">struct</span> &#123;</span><br><span class="line">	Key1 <span class="keyword">string</span> <span class="string">`json:&quot;key1&quot;`</span></span><br><span class="line">	Key2 <span class="keyword">string</span> <span class="string">`json:&quot;key2&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Hello</span><span class="params">(ctx context.Context, event DefineEvent)</span> <span class="params">(<span class="keyword">string</span>, error)</span></span> &#123;</span><br><span class="line">	fmt.Println(<span class="string">&quot;key1:&quot;</span>, event.Key1)</span><br><span class="line">	fmt.Println(<span class="string">&quot;key2:&quot;</span>, event.Key2)</span><br><span class="line">	<span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;Hello %s!&quot;</span>, event.Key1), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	cloudfunction.Start(Hello)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>serverless.yml:</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">component:</span> <span class="string">scf</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">tryserverless</span></span><br><span class="line"><span class="attr">org:</span> <span class="string">test</span></span><br><span class="line"><span class="attr">app:</span> <span class="string">scfApp</span></span><br><span class="line"><span class="attr">stage:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line"><span class="attr">inputs:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">tryserverless</span></span><br><span class="line">  <span class="attr">src:</span> <span class="string">.</span></span><br><span class="line">  <span class="attr">runtime:</span> <span class="string">Go1</span></span><br><span class="line">  <span class="attr">region:</span> <span class="string">ap-guangzhou</span></span><br><span class="line">  <span class="attr">handler:</span> <span class="string">tryserverless</span></span><br><span class="line">  <span class="attr">events:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">apigw:</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">serverless_api</span></span><br><span class="line">        <span class="attr">parameters:</span></span><br><span class="line">          <span class="attr">protocols:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">http</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">https</span></span><br><span class="line">          <span class="attr">serviceName:</span></span><br><span class="line">          <span class="attr">description:</span> <span class="string">The</span> <span class="string">service</span> <span class="string">of</span> <span class="string">Serverless</span> <span class="string">Framework</span></span><br><span class="line">          <span class="attr">environment:</span> <span class="string">release</span></span><br><span class="line">          <span class="attr">endpoints:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">/hello</span></span><br><span class="line">              <span class="attr">method:</span> <span class="string">GET</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>go.mod:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">module github.com/dancemystyle/tryserverless <span class="comment">// go mod init github.com/dancemystyle/tryserverless, 将github.com/dancemystyle/tryserverless替换为你自己的</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">go</span> <span class="number">1.14</span></span><br><span class="line"></span><br><span class="line">require github.com/tencentyun/scf-<span class="keyword">go</span>-lib v0<span class="number">.0</span><span class="number">.0</span><span class="number">-20200116145541</span><span class="number">-9</span>a6ea1bf75b8 <span class="comment">// indirect</span></span><br></pre></td></tr></table></figure>
-
-<p>代码准备好了，cd到项目根目录，然后打包、压缩、部署，一气呵成：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GOOS=linux GOARCH=amd64 go build -o tryserverless main.go</span><br><span class="line">zip tryserverless.zip tryserverless</span><br><span class="line">serverless deploy</span><br></pre></td></tr></table></figure>
-
-<p>执行serverless deploy后使用微信扫码就能上传应用并部署，部署成功后得到提示：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">FunctionName: tryserverless</span><br><span class="line">Description:</span><br><span class="line">Namespace:    default</span><br><span class="line">Runtime:      Go1</span><br><span class="line">Handler:      tryserverless</span><br><span class="line">MemorySize:   128</span><br><span class="line">Triggers:</span><br><span class="line">  apigw:</span><br><span class="line">    - https://************.gz.apigw.tencentcs.com/release/hello</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">24s › tryserverless › Success</span><br></pre></td></tr></table></figure>
-
-<p>访问apigw下的URL即可测试你的Serverless API。</p>
-<p>再分享一下我遇到的腾讯云Serverless文档不完善/不一致带来的小问题：</p>
-<ol>
-<li>Go runtime值不统一。Serverless Framework的<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/1154/39271">文档</a>说使用Go语言的话，serverless.yml里的inputs.runtime填Golang1，但事实上只有Go1才能工作：<br><img src="/images/image-20200526233418375.png"></li>
-<li>serverless.yml的inputs.handler字段。应该使用打包出来的二进制的名字，对应到上面的例子，就是应该填tryserverless。</li>
-</ol>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/10/07/%E4%BD%BF%E7%94%A8%E8%85%BE%E8%AE%AF%E4%BA%91Serverless-Framework%E5%BC%80%E5%8F%91Go-API-Part-1-Hello-md/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -517,10 +427,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -540,13 +450,14 @@
           <a href="/archives/">
         
           <span class="site-state-item-count">3</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
+          
         <span class="site-state-item-count">1</span>
-        <span class="site-state-item-name">tags</span></a>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -578,7 +489,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Myron Meng</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
 
         
@@ -604,7 +515,7 @@
 <script src="/js/motion.js"></script>
 
 
-<script src="/js/schemes/muse.js"></script>
+<script src="/js/schemes/pisces.js"></script>
 
 
 <script src="/js/next-boot.js"></script>
