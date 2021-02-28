@@ -28,7 +28,7 @@
 <meta property="og:description" content="负责开发过一个非常有趣的实时在线匿名社交小程序，它的玩法是这样的：  用户上线后可以向感兴趣的对象发起配对请求，对方同意后就可以开始聊天。用户每次只能和一个对象配对，如果要换人的话需要先解除配对。 用户可以选择多个匹配模式：默认、附近的人、喜欢相同音乐的人、手机电量、发的照片的标签。用户在小程序左右滑动即可切换模式，且只会看到跟自己同模式的候选对象。  因为这个小程序对用户状态的实时性要求非常高，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-23T14:32:36.000Z">
-<meta property="article:modified_time" content="2021-02-27T06:13:20.980Z">
+<meta property="article:modified_time" content="2021-02-28T00:26:57.335Z">
 <meta property="article:author" content="破障者">
 <meta property="article:tag" content="go">
 <meta name="twitter:card" content="summary">
@@ -229,9 +229,9 @@
 <p>这样每个RequestCode都能对应到它的handler func了，在需要添加新的WebSocket API的时候，我们只需要到<code>readPump()</code>的switch块添加一个新的case分之即可：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">readPump</span><span class="params">()</span></span> &#123;</span><br><span class="line">	</span><br><span class="line">		...</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">switch</span> req.Code &#123;</span><br><span class="line">		<span class="keyword">case</span> Code1:</span><br><span class="line">			<span class="comment">// Call the handler func for Code1</span></span><br><span class="line">		<span class="keyword">case</span> Code2:</span><br><span class="line">			<span class="comment">// Call the handler func for Code2</span></span><br><span class="line">		<span class="keyword">case</span> Code3:</span><br><span class="line">			<span class="comment">// Call the handler func for Code3</span></span><br><span class="line">		<span class="keyword">case</span> CodeN:</span><br><span class="line">			<span class="comment">// Call the handler func for CodeN</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="为什么要做WebSocket封装"><a href="#为什么要做WebSocket封装" class="headerlink" title="为什么要做WebSocket封装"></a>为什么要做WebSocket封装</h2><p>到这里代码就能工作了，也能满足项目的要求了，我们可以提交代码并把它推到remote提MR了吧？还不行！如果是我来review这个MR的话我会给这个MR提几个comments：</p>
+<h2 id="为什么要做WebSocket封装"><a href="#为什么要做WebSocket封装" class="headerlink" title="为什么要做WebSocket封装"></a>为什么要做WebSocket封装</h2><p>到这里代码就能工作了，也能满足项目的要求了，但是还不够好用：</p>
 <ol>
-<li><code>RequestCode</code>和<code>handler</code>的注册绑定在<code>readPump()</code>方法体里，每次加新WebSocket API都得来到这里，不够直接，这个代码本是在一个封装好的package里，其它package只应该调用它，而不应该跑到里面修改它的代码；当API多了之后这个<code>switch ... case&#123;&#125;</code>代码块将变得非常长。这都让这里的代码显得不那么优雅。</li>
+<li><code>RequestCode</code>到<code>handler</code>的绑定注册是在<code>readPump()</code>方法体里，每次加新WebSocket API都得来到这里，这个代码应该是在一个封装好的package里，其它package只负责调用它；当API多了之后这个<code>switch ... case&#123;&#125;</code>代码块将变得非常长。这都让这里的代码显得不那么优雅</li>
 <li>太多重复代码，每添加一个<code>RequestCode</code>，都得为它编写以下代码：<ul>
 <li>panic recovery</li>
 <li>设置request-id</li>
