@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://danceinstyle.github.io/images/image-20210209022713000.png">
 <meta property="article:published_time" content="2021-02-08T18:24:46.000Z">
-<meta property="article:modified_time" content="2021-02-28T05:18:01.235Z">
+<meta property="article:modified_time" content="2021-02-28T05:20:58.080Z">
 <meta property="article:author" content="破障者">
 <meta property="article:tag" content="Go后端工程师 Go语言">
 <meta name="twitter:card" content="summary">
@@ -229,7 +229,7 @@
 <li>方案2：如这篇<a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog/">blog</a>所述，使用CloudFront &amp; Lambda@Edge在用户请求thumbnail时没有的话先生成一个，生成成功后再存在S3再返回</li>
 <li>方案3：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/45120247/how-to-store-image-thumbnail-on-aws-s3">Stackoverflow</a>使用额外的收费服务<a target="_blank" rel="noopener" href="http://cloudinary.com/">Cloudinary</a>或者<a target="_blank" rel="noopener" href="http://imgix.com/">Imgix</a></li>
 </ul>
-<p>我们不太可能选择方案0，因为现在用户上传的图片一般是直传存储桶而不会经过我们的backend。这个方案需要在用户上传图片的时候做很多事情：生成thumbnail、上传thumbnail+原图到存储桶、数据库记录媒体资源，因此上次照片的接口的latency会很难看，用户体验不好。</p>
+<p>我们不太可能选择方案0，因为现在用户上传的图片一般是直传存储桶而不会经过我们的backend。这个方案需要在用户上传图片的时候做很多事情：生成thumbnail、上传thumbnail+原图到存储桶、数据库记录媒体资源，因此上传照片的接口的latency会差强人意，用户体验不好。</p>
 <p>方案1也不太可能，因为我们不知道lambda function什么时候完成这个事情，完成之后还得把“完成了”这个状态持久化，这样才能通知client-side可以放心使用thumbnail，在这之前client side还是得使用原图，太麻烦。</p>
 <p>方案3也不是个好的解决方案，因为我们要购买和引进新的服务，增加了系统依赖的实体，也增加了复杂性。</p>
 <p>因此看出来只能选择方案2了。但是这个方案也不是完美的，它最少会要求有1次lambda调用，最多会有2次lambda调用，而lambda函数有冷启动问题，这导致了图片的加载速度还是没有想象中的好。</p>
