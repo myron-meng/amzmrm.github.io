@@ -28,7 +28,7 @@
 <meta property="og:description" content="应用跟数据库打交道时总要面临这些问题：  数据库schema如何migrate 应用如何执行数据库操作  这里分享一下我最喜欢的实践方式。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-01-10T09:06:47.000Z">
-<meta property="article:modified_time" content="2021-02-27T12:09:31.431Z">
+<meta property="article:modified_time" content="2021-02-28T06:20:09.419Z">
 <meta property="article:author" content="破障者">
 <meta property="article:tag" content="go">
 <meta property="article:tag" content="database">
@@ -259,8 +259,8 @@
 <li>代码编写完毕</li>
 <li>将migrate文件和代码一起提交</li>
 </ol>
-<p>另外一个好的实践是把数据库migration放到CI/CD流程，code push → code analysis → code test → 打包镜像 → DB migration → Deploy，这样migration也自动化了。</p>
-<h2 id="ORM"><a href="#ORM" class="headerlink" title="ORM"></a>ORM</h2><p>好了，现在来讨论Go如何操作数据库。还是先列举一下有哪些方式：</p>
+<p>另外一个好的实践是把数据库schema migration放到CI/CD流程，code push → code analysis → code test → DB migration → 打包镜像 → Deploy，这样migration也自动化了。</p>
+<h2 id="ORM"><a href="#ORM" class="headerlink" title="ORM"></a>ORM</h2><p>接下来讨论Go如何操作数据库，先列举摆在我们面前的选择：</p>
 <ol>
 <li>database/sql</li>
 <li>sqlx</li>
@@ -271,7 +271,7 @@
 <li>虽然简单但要非常频繁去书写，效率不高，看起来不够优雅</li>
 <li>编辑器/IDE没有高亮、补全、语法修正、拼写检查等功能，你需要非常精确地记住数据库schema</li>
 </ol>
-<p>所以我会选择一个ORM去操作数据库，我参加的所有的工作项目中使用的都是grom，但这一次我没有它而是选择了sqlboiler，因为我喜欢sqlboiler的理念：</p>
+<p>所以我会选择一个ORM去操作数据库，我参加的所有的工作项目中使用的都是gorm，但这一次我没有它而是选择了sqlboiler，因为我喜欢sqlboiler的理念：</p>
 <ol>
 <li>schema first。sqlboiler使用代码生成的方式基于数据库schema生成ORM代码，这在你有一个非常庞大的数据库schema的情况下优势尤其明显，你无需再一个一个地书写数据库表对应的model struct</li>
 <li>type-safe。gorm不是</li>
@@ -284,30 +284,30 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sqlboiler -p models mysql</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 <p>就这样，操作数据库的代码就生成好了。</p>
-<h3 id="sqlboiler-vs-gorm"><a href="#sqlboiler-vs-gorm" class="headerlink" title="sqlboiler vs gorm"></a>sqlboiler vs gorm</h3><p>sqlboiler和gorm最大的不同在于sqlboiler是type-safe的，gorm不是。</p>
-<p>我们先看看sqlboiler的type-safe为我们带来了什么：</p>
+<h3 id="sqlboiler-vs-gorm"><a href="#sqlboiler-vs-gorm" class="headerlink" title="sqlboiler vs gorm"></a>sqlboiler vs gorm</h3><p>sqlboiler和gorm最大的不同在于sqlboiler是type-safe的，gorm不是。sqlboiler为我们生成了：</p>
 <ol>
 <li>models.TableNames.TableName</li>
 <li>models.ModelColumns.ColumnName</li>
 <li>models.ModelWhere.ColumnName.Operator</li>
 <li>models.ModelRels.ForeignTableName</li>
 </ol>
-<p>举例来说，当gorm使用字符串字面量去指定表名、字段名时，sqlboiler可以使用代码生成的变量：</p>
+<p>当gorm使用字符串字面量去指定表名、字段名时，sqlboiler可以使用代码生成的变量：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sqlboiler</span></span><br><span class="line">user, err = models.Users(models.UserWhere.Age.EQ(null.IntFrom(<span class="number">18</span>))).One(context.TODO(), db)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// gorm</span></span><br><span class="line"><span class="keyword">var</span> user models.User</span><br><span class="line">err = db.Where(<span class="string">&quot;age = ?&quot;</span>, <span class="number">18</span>).First(&amp;user).Error</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>gorm没有type-safe带来了这些弊端：</p>
+<p>没有type-safe，失去很多能力：</p>
 <ol>
-<li>表名、字段名拼错了无法提前知道，只有在代码运行出错时才知道</li>
-<li>schema改了的话，无法通过IDE/编辑器的refactor功能改动，只能字符串匹配</li>
+<li>表名、字段名拼写错误无法提前知道，只有在代码运行出错时才知道</li>
+<li>schema改了，在代码库里无法通过IDE/编辑器的refactor功能去改动，只能字符串匹配</li>
 <li><code>where age = ?</code>这个condition：sqlboiler的type-safe确保了只能传参整型，而gorm没有type-safe需要使用<code>interface&#123;&#125;</code>，编辑器、编译器会认为<code>gormdb.Where(&quot;age = ?&quot;, &quot;abc&quot;)</code>是合法的，这种错误也同样只能在运行时才能发现</li>
 </ol>
-<p>最后，<a target="_blank" rel="noopener" href="https://github.com/volatiletech">volatiletech</a>总结了sqlboiler有以下优点：</p>
+<p>最后，<a target="_blank" rel="noopener" href="https://github.com/volatiletech">volatiletech</a>（sqlboiler的repository owner）总结了sqlboiler有以下优点：</p>
 <ol>
-<li><code>models</code>包是类型安全的，这意味着不会因输入错误的类型而导致<code>panic</code>，也不需要<code>interface&#123;&#125;</code></li>
-<li>sqlboiler的类型与数据库字段类型紧密相关，null包对此进行了扩展，该包支持几乎所有Go数据类型</li>
-<li>易于调试的系统，ORM是针对数据库schema量身定制的，代码路径易于跟踪，因为它并不全都隐藏在反射中</li>
+<li>代码生成的<code>models</code>包是类型安全的，这意味着不会因输入错误的类型而导致<code>panic</code>，也不需要<code>interface&#123;&#125;</code></li>
+<li>sqlboiler的类型与数据库schema字段类型紧密相关，null包对此进行了扩展，该包支持几乎所有Go数据类型</li>
+<li>使用sqlboiler，你的系统是易于调试的，ORM是针对数据库schema量身定制的，代码路径易于跟踪，因为它并不全都隐藏在反射中</li>
 <li>因为代码生成，自动补全功能可提高工作效率</li>
 </ol>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>迫于没有范型，Go无法实现一个“好用的”ORM。gorm选择了<code>interface&#123;&#125;+反射</code>这条路，因此也就无法拥有type-safe；sqlboiler选择了代码生成这条路，因此就拥有了type-safe，但使用起来要比gorm啰嗦一点。如何选型，取决于你是否需要type-safe，如果type-safe对你来说非常重要，那么sqlboiler是一个好选择；如果易用性对你来说最重要，typs-safe没那么重要，单词拼写错误、类型不对什么的，交给单元测试和code review去挡着，那么gorm是一个好选择。</p>
 
     </div>
 
@@ -393,7 +393,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Migration"><span class="nav-number">1.</span> <span class="nav-text">Migration</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.1.</span> <span class="nav-text">手动维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%9F%E5%8A%A9ORM%E6%A1%86%E6%9E%B6%E8%87%AA%E5%8A%A8migrate"><span class="nav-number">1.2.</span> <span class="nav-text">借助ORM框架自动migrate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8migrate%E5%B7%A5%E5%85%B7"><span class="nav-number">1.3.</span> <span class="nav-text">使用migrate工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORM"><span class="nav-number">2.</span> <span class="nav-text">ORM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sqlboiler-vs-gorm"><span class="nav-number">2.1.</span> <span class="nav-text">sqlboiler vs gorm</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Migration"><span class="nav-number">1.</span> <span class="nav-text">Migration</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.1.</span> <span class="nav-text">手动维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%80%9F%E5%8A%A9ORM%E6%A1%86%E6%9E%B6%E8%87%AA%E5%8A%A8migrate"><span class="nav-number">1.2.</span> <span class="nav-text">借助ORM框架自动migrate</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8migrate%E5%B7%A5%E5%85%B7"><span class="nav-number">1.3.</span> <span class="nav-text">使用migrate工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORM"><span class="nav-number">2.</span> <span class="nav-text">ORM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sqlboiler-vs-gorm"><span class="nav-number">2.1.</span> <span class="nav-text">sqlboiler vs gorm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.2.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
