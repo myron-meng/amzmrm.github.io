@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"danceinstyle.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Code review对于软件开发的重要性不言而喻，但我今天要谈的不是如何给一个MR做code review，而是要谈谈整个团队改如何高效地在code review这件事上进行协作，这里分享一下目前所在的后端团队在践行的code review协作方式，我觉得很好。">
+  <meta name="description" content="Code review 对于软件开发的重要性不言而喻，但笔者今天要说的不是如何给 MR 做 code review，而是要说说团队如何高效地在 code review 这件事上进行协作，笔者在这里分享目前所在的后端团队正在践行的 code review 协作方式。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="团队该如何推行Code Review">
+<meta property="og:title" content="团队如何在 Code Review 这件事上进行协作">
 <meta property="og:url" content="https://danceinstyle.github.io/2021/01/22/code-review/index.html">
 <meta property="og:site_name" content="破障者">
-<meta property="og:description" content="Code review对于软件开发的重要性不言而喻，但我今天要谈的不是如何给一个MR做code review，而是要谈谈整个团队改如何高效地在code review这件事上进行协作，这里分享一下目前所在的后端团队在践行的code review协作方式，我觉得很好。">
+<meta property="og:description" content="Code review 对于软件开发的重要性不言而喻，但笔者今天要说的不是如何给 MR 做 code review，而是要说说团队如何高效地在 code review 这件事上进行协作，笔者在这里分享目前所在的后端团队正在践行的 code review 协作方式。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-01-22T13:38:10.000Z">
-<meta property="article:modified_time" content="2021-02-27T03:38:57.819Z">
+<meta property="article:modified_time" content="2021-10-24T02:21:13.190Z">
 <meta property="article:author" content="破障者">
 <meta property="article:tag" content="Go Golang 后端工程师">
 <meta name="twitter:card" content="summary">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>团队该如何推行Code Review | 破障者</title>
+  <title>团队如何在 Code Review 这件事上进行协作 | 破障者</title>
   
 
 
@@ -180,7 +180,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          团队该如何推行Code Review
+          团队如何在 Code Review 这件事上进行协作
         </h1>
 
         <div class="post-meta">
@@ -205,27 +205,27 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Code review对于软件开发的重要性不言而喻，但我今天要谈的不是如何给一个MR做code review，而是要谈谈整个团队改如何高效地在code review这件事上进行协作，这里分享一下目前所在的后端团队在践行的code review协作方式，我觉得很好。</p>
+        <p>Code review 对于软件开发的重要性不言而喻，但笔者今天要说的不是如何给 MR 做 code review，而是要说说团队如何高效地在 code review 这件事上进行协作，笔者在这里分享目前所在的后端团队正在践行的 code review 协作方式。</p>
 <a id="more"></a>
 
 <h3 id="Review-MR的时机"><a href="#Review-MR的时机" class="headerlink" title="Review MR的时机"></a>Review MR的时机</h3><ol>
-<li>当你提交一个MR时，review一个MR</li>
-<li>编写代码30分钟后，review一个MR</li>
-<li>吃完早中晚餐review一个MR</li>
-<li>休息回来review一个MR</li>
-<li>review完一个MR后，再来一个</li>
+<li>当你提交一个 MR 时，review 一个 MR</li>
+<li>编写代码 30 分钟后，review 一个 MR</li>
+<li>吃完早中晚餐 review 一个 MR</li>
+<li>休息回来 review 一个 MR</li>
+<li>review 完一个 MR 后，再来一个</li>
 </ol>
-<h3 id="了解清楚团队在code-review这件事上的表现"><a href="#了解清楚团队在code-review这件事上的表现" class="headerlink" title="了解清楚团队在code review这件事上的表现"></a>了解清楚团队在code review这件事上的表现</h3><p>鼓励团队成员都以上述的节奏去协作，这样保证MR提交后都能及时得到review。如果MR的平均等待时间很短，那团队的开发效率就会非常高效。可以使用Gitlab的统计API，定期比如每周统计团队成员的comment或者approval的数量，当团队成员的comment或者approval数量都比较均衡时，那就算是一个健康的状态。比如一下这个匿名的统计就不是一个很好的状态，理想的状态是每个人comments数量都在20上下，approvals也都是在20上下：</p>
+<h3 id="了解团队成员在-code-review-这件事上的表现"><a href="#了解团队成员在-code-review-这件事上的表现" class="headerlink" title="了解团队成员在 code review 这件事上的表现"></a>了解团队成员在 code review 这件事上的表现</h3><p>鼓励团队成员都以上述的节奏去协作，这样 MR 提交后都能及时得到 review，进而才能开始后续的代码合并、部署到测试环境、交付测试。如果 MR 的平均等待时间很短，那团队的开发效率就会非常高效。可以使用 GitLab 的统计 API，定期比如每周统计团队成员的 comment 或者 approval 的数量，当团队成员的 comment 或者 approval 数量都比较均衡时，那就算是一个健康的状态。比如一下这个匿名的统计就不是一个很好的状态，理想的状态是每个人 comments 数量都在20上下，approvals 也都是在20上下：</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Weekly MR Reviewers</span><br><span class="line">- Mike:       comments: <span class="number">39</span>, <span class="attr">approvals</span>: <span class="number">32</span></span><br><span class="line">- Alex:   comments: <span class="number">35</span>, <span class="attr">approvals</span>: <span class="number">23</span></span><br><span class="line">- Dave:     comments: <span class="number">27</span>, <span class="attr">approvals</span>: <span class="number">28</span></span><br><span class="line">- George:      comments: <span class="number">26</span>, <span class="attr">approvals</span>: <span class="number">18</span></span><br><span class="line">- Myron:      comments: <span class="number">15</span>, <span class="attr">approvals</span>: <span class="number">28</span></span><br><span class="line">- Justin:    comments:  <span class="number">8</span>, <span class="attr">approvals</span>:  <span class="number">7</span></span><br><span class="line">- Peter:        comments:  <span class="number">7</span>, <span class="attr">approvals</span>:  <span class="number">8</span></span><br><span class="line">- Joe:      comments:  <span class="number">1</span>, <span class="attr">approvals</span>:  <span class="number">2</span></span><br></pre></td></tr></table></figure>
 
-<p>此外，除非是紧急修复的MR，否则一般的MR都应该禁得起等待，每个人的工作不应该被MR打断。</p>
-<h3 id="如何让你的MR加速得到approval"><a href="#如何让你的MR加速得到approval" class="headerlink" title="如何让你的MR加速得到approval"></a>如何让你的MR加速得到approval</h3><ol>
-<li>贴出你的MR要完成的任务，可以是Jira task、Gitlab issue等的链接</li>
+<p>此外，除非是紧急修复的 MR，否则一般的 MR 都应该经得起等待，每个人的工作不应该被 MR 打断。</p>
+<h3 id="如何让你的MR加速得到-approval"><a href="#如何让你的MR加速得到-approval" class="headerlink" title="如何让你的MR加速得到 approval"></a>如何让你的MR加速得到 approval</h3><ol>
+<li>贴出你的 MR 要完成的任务，可以是 Jira task、GitLab issue等的链接</li>
 <li>解释清楚你是如何实现的</li>
 <li>解释你为你的代码做了何种测试，贴出测试结果</li>
-<li>缩小MR的scope，不要一下子来个大的，否则别人会对你的MR产生恐惧</li>
-<li>如果MR的thread对话开始多起来，立刻开始一个视频会议或者面对面沟通，快速结束对话</li>
-<li>写clean code</li>
+<li>缩小 MR 的 scope，不要一下子来个大的，否则别人会对你的 MR 产生恐惧</li>
+<li>如果 MR 的 thread 对话开始多起来，立刻开始一个视频会议或者面对面沟通，快速结束对话</li>
+<li>写 clean code</li>
 </ol>
 
     </div>
@@ -307,7 +307,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Review-MR%E7%9A%84%E6%97%B6%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">Review MR的时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E6%B8%85%E6%A5%9A%E5%9B%A2%E9%98%9F%E5%9C%A8code-review%E8%BF%99%E4%BB%B6%E4%BA%8B%E4%B8%8A%E7%9A%84%E8%A1%A8%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">了解清楚团队在code review这件事上的表现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A9%E4%BD%A0%E7%9A%84MR%E5%8A%A0%E9%80%9F%E5%BE%97%E5%88%B0approval"><span class="nav-number">3.</span> <span class="nav-text">如何让你的MR加速得到approval</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Review-MR%E7%9A%84%E6%97%B6%E6%9C%BA"><span class="nav-number">1.</span> <span class="nav-text">Review MR的时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E5%9B%A2%E9%98%9F%E6%88%90%E5%91%98%E5%9C%A8-code-review-%E8%BF%99%E4%BB%B6%E4%BA%8B%E4%B8%8A%E7%9A%84%E8%A1%A8%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">了解团队成员在 code review 这件事上的表现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%AE%A9%E4%BD%A0%E7%9A%84MR%E5%8A%A0%E9%80%9F%E5%BE%97%E5%88%B0-approval"><span class="nav-number">3.</span> <span class="nav-text">如何让你的MR加速得到 approval</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
