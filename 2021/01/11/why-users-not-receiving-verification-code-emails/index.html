@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"danceinstyle.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="客户服务部门反映有不少用户抱怨没收到email验证码，并提供了抱怨用户的email list。这个bug分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外email都发送成功了，再去Grafana看看：">
+  <meta name="description" content="客户服务部门反映有不少用户抱怨没收到 email 验证码，并提供了抱怨用户的 email list。这个 bug 分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外 email 都发送成功了，再去 Grafana 看看：">
 <meta property="og:type" content="article">
-<meta property="og:title" content="用户为什么没收到email验证码">
+<meta property="og:title" content="用户为什么没收到 email 验证码">
 <meta property="og:url" content="https://danceinstyle.github.io/2021/01/11/why-users-not-receiving-verification-code-emails/index.html">
 <meta property="og:site_name" content="破障者">
-<meta property="og:description" content="客户服务部门反映有不少用户抱怨没收到email验证码，并提供了抱怨用户的email list。这个bug分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外email都发送成功了，再去Grafana看看：">
+<meta property="og:description" content="客户服务部门反映有不少用户抱怨没收到 email 验证码，并提供了抱怨用户的 email list。这个 bug 分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外 email 都发送成功了，再去 Grafana 看看：">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://danceinstyle.github.io/images/image-20210111233418375.png">
 <meta property="article:published_time" content="2021-01-11T12:36:26.000Z">
-<meta property="article:modified_time" content="2021-02-27T03:58:23.572Z">
+<meta property="article:modified_time" content="2021-10-24T07:39:48.715Z">
 <meta property="article:author" content="破障者">
 <meta property="article:tag" content="architect">
 <meta name="twitter:card" content="summary">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>用户为什么没收到email验证码 | 破障者</title>
+  <title>用户为什么没收到 email 验证码 | 破障者</title>
   
 
 
@@ -174,7 +174,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/hotballoon.jpg">
       <meta itemprop="name" content="破障者">
-      <meta itemprop="description" content="不喜欢模糊的、有歧义的、不确定的、不精确的信息。">
+      <meta itemprop="description" content="不喜欢模糊的、有歧义的、不确定的、不精确的信息传递。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -182,7 +182,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          用户为什么没收到email验证码
+          用户为什么没收到 email 验证码
         </h1>
 
         <div class="post-meta">
@@ -207,33 +207,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>客户服务部门反映有不少用户抱怨没收到email验证码，并提供了抱怨用户的email list。这个bug分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外email都发送成功了，再去Grafana看看：</p>
+        <p>客户服务部门反映有不少用户抱怨没收到 email 验证码，并提供了抱怨用户的 email list。这个 bug 分配给我后我的第一反映是去查看这些用户的验证码是否发送成功，无一例外 email 都发送成功了，再去 Grafana 看看：</p>
 <a id="more"></a>
 
 <p><img src="/images/image-20210111233418375.png"></p>
-<p>可以看到大概从5:30开始，email success count就没跟上new email task count。</p>
-<p>项目使用<a target="_blank" rel="noopener" href="https://github.com/RichardKnop/machinery">machinery</a> 这个异步任务库去发送email，每次有发送email的需求时都是提交一个task给machinery，然后machinery会异步执行email发送任务。email success count没跟上new email task count也就是在5:30开始后一段时间内machinery没有消耗email task，过了一段时间后（～半个小时）才开始正常消费task，最后email都发送成功了。</p>
-<p>到目前为止我们已经清楚了问题的所在：用户请求一个email验证码，我们也都发送成功了，只不过是我们过了若干分钟后才发送出去。验证码email实时性要求非常高，点击发送后就要立马就收到email，晚1～2min对客户来说就是没发送。</p>
-<p>既然问题是machinery没有及时消耗email task，那它为什么没有按照我们期待的方式去工作呢？找到启动machinery worker的代码：</p>
+<p>可以看到大概从5:30开始，email success count 就没跟上 new email task count。</p>
+<p>项目使用 <a target="_blank" rel="noopener" href="https://github.com/RichardKnop/machinery">machinery</a> 这个异步任务库去发送 email，每次有发送 email 的需求时都是提交一个 task 给 machinery，然后 machinery 会异步执行 email 发送任务。email success count 没跟上 new email task count 也就是在 5:30 开始后一段时间内 machinery 没有消耗 email task，过了一段时间后（～半个小时）才开始正常消费 task，最后 email 都发送成功了。</p>
+<p>到目前为止我们已经清楚了问题的所在：用户请求一个 email 验证码，我们也都发送成功了，只不过是我们过了若干分钟后才发送出去。验证码 email 实时性要求非常高，点击发送后就要立马就收到 email，晚 1～2min 对客户来说就是没发送。</p>
+<p>既然问题是 machinery 没有及时消耗 email task，那它为什么没有按照我们期待的方式去工作呢？找到启动 machinery worker 的代码：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// LaunchWorker read tasks from broker and process</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	consumerTag := <span class="string">&quot;machinery_worker&quot;</span></span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewWorker(consumerTag, env.GetWorkerConcurrency())</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"><span class="comment">// GetWorkerConcurrency returns machinery worker concurrency</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">GetWorkerConcurrency</span><span class="params">()</span> <span class="title">int</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> parseIntEnv(<span class="string">&quot;WORKER_CONCURRENCY&quot;</span>, <span class="number">10</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>发现machinery worker的concurrency=10，且整个daemon只有一个worker，这就意味着worker以concurrency=10的速度去消费所有的异步task。而事发时线上有个举办方在举行一个参会人数～2000人的大会，会议时使用到了某个feature，这个feature会以异步的方式去为这2000人中参会的人生成个性化内容，每个task都是非常耗时、消耗资源的，最终就导致了email task排了很久的队才被执行。</p>
+<p>发现 machinery worker 的concurrency=10，且整个 daemon 只有一个 worker，这就意味着 worker 以 concurrency=10 的速度去消费所有的异步 task。而事发时线上有个举办方在举行一个参会人数 ～2000 人的大会，会议时使用到了某个 feature，这个 feature 会以异步的方式去为这 2000 人中参会的人生成个性化内容，每个 task 都是非常耗时、消耗资源的，最终就导致了 email task 排了很久的队才被执行。</p>
 <p>这就是《亿级流量网站架构核心技术》<strong>隔离术</strong>所描述的：如果一个功能对你来说非常重要，那么你就要把它跟其它功能隔离开来，给它分配它独享的线程资源，让当其它功能在资源不足时也无法抢占你最重要的功能的独享资源。</p>
-<p>既然导致bug的原因已经很清楚了，那么在这个具体场景下解决方式就是利用machinery的<code>RoutingKey</code>：</p>
+<p>既然导致 bug 的原因已经很清楚了，那么在这个具体场景下解决方式就是利用 machinery 的 <code>RoutingKey</code>：</p>
 <blockquote>
 <p>RoutingKey is used for routing a task to correct queue. If you leave it empty, the default behavior will be to set it to the default queue’s binding key for direct exchange type and to the default queue name for other exchange types.</p>
 </blockquote>
-<p>给email task指定一个RoutingKey，这样task会被push到一个独有的queue，然后另起一个worker专门负责消费这个queue里的task：</p>
+<p>给 email task 指定一个 RoutingKey，这样 task 会被 push 到一个独有的 queue，然后另起 worker 专门负责消费这个 queue 里的 task：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">emailTask := tasks.Signature&#123;</span><br><span class="line">    RoutingKey:   <span class="string">&quot;email_task_queue&quot;</span>, <span class="comment">// 指定email专用的queue</span></span><br><span class="line">    Name:         <span class="string">&quot;email_task&quot;</span>,</span><br><span class="line">    RetryCount:   taskRetryCount,</span><br><span class="line">    RetryTimeout: taskRetryTimeout,</span><br><span class="line">    Args: []tasks.Arg&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动一个email专用的worker</span></span><br><span class="line"><span class="comment">// LaunchEmailWorker starts worker for emails</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchEmailWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	routingKey := <span class="string">&quot;email_task_queue&quot;</span></span><br><span class="line">	concurrency := <span class="number">10</span></span><br><span class="line">	<span class="keyword">if</span> env.GetDefaultEmailWorkerConcurrency() != <span class="number">0</span> &#123;</span><br><span class="line">		concurrency = env.GetDefaultEmailWorkerConcurrency()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewCustomQueueWorker(</span><br><span class="line">		<span class="string">&quot;email_task_worker&quot;</span>, </span><br><span class="line">		concurrency, </span><br><span class="line">		routingKey,</span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>好了，现在应该没有问题了。有人可能会问，既然email服务那么重要，那为什么不拆成单独的服务呢？因为架构是慢慢演进的，之前实现email功能的同事他为什么没有这样做呢？他并不是没想到，而是因为没必要！我看到代码首次实现还是使用channel实现的，后来才演进成使用machinery（可能是因为实例重启后email task又丢失了 XD）。</p>
-<p>那现在我可以push代码提MR了吧？再等等，我发现还可以做得更好。我发现项目的email大概有这几种类型：</p>
+<p>好了，现在应该没有问题了。有人可能会问，既然 email 服务那么重要，那为什么不拆成单独的服务呢？因为架构是慢慢演进的，之前实现email功能的同事他为什么没有这样做呢？他并不是没想到，而是因为没必要！我看到代码首次实现还是使用 channel 实现的，后来才演进成使用 machinery（可能是因为实例重启后 email task又丢失了 XD）。</p>
+<p>那现在我可以 push 代码提 MR 了吧？再等等，我发现还可以做得更好。我发现项目的 email 大概有这几种类型：</p>
 <ol>
-<li>时延敏感型：用户点击按钮后就要立马收到email，一旦延迟了用户就会认为遇到bug了没有收到邮件，比如验证码、订单确认</li>
+<li>时延敏感型：用户点击按钮后就要立马收到email，一旦延迟了用户就会认为遇到 bug 了没有收到邮件，比如验证码、订单确认</li>
 <li>零散型：由随机的行为触发，或者是只给有限数目的目标用户发送的，比如票售完了通知会议举办方</li>
-<li>紧密循环型：满足需要发送邮件的条件后，需要给大量的用户发送邮件（比如给会议的所有参会者发送email，参会者人数最多的会议达到了5000人）</li>
+<li>紧密循环型：满足需要发送邮件的条件后，需要给大量的用户发送邮件（比如给会议的所有参会者发送 email，参会者人数最多的会议达到了 5000 人）</li>
 </ol>
-<p>那接下来做什么呢？因为公司的AWS账户只能以70封/s的峰值速率发送，因此我会先给我们的多个部署环境重新分配这宝贵的资源：</p>
+<p>那接下来做什么呢？因为公司的 AWS 账户只能以 70/s 的峰值速率发送，因此我会先给我们的多个部署环境重新分配这宝贵的资源：</p>
 <ol>
 <li>dev：4/70</li>
 <li>staging：4/70</li>
@@ -244,15 +244,15 @@
 <li>时延敏感型：配额的一半</li>
 <li>非时延敏感型（暂不进一步划分零散型和紧密循环型）：配额的一半</li>
 </ol>
-<p>为什么rate limit也要划分得这么细呢？因为email服务使用的是AWS SES，AWS SES发送email有账户级别的速率限制，比如最高每秒70封邮件。如果用户的验证码邮件刚好排在紧密循环型邮件功能的后面，比如会议举办方给有5000个attendee的会议发送广播邮件，那么验证码邮件需要等待5000/60～=80秒左右才收到email，时延敏感型的邮件没有即时送达就会被用户视为没有送达，所以要保证没有任何其它因素阻塞着时延敏感型的邮件。</p>
+<p>为什么 rate limit 也要划分得这么细呢？因为 email 服务使用的是 AWS SES，AWS SES 发送 email 有账户级别的速率限制，比如最高 70/s。如果用户的验证码邮件刚好排在紧密循环型邮件功能的后面，比如会议举办方给有 5000 个 attendee 的会议发送广播邮件，那么验证码邮件需要等待 5000/60～=80 秒左右才收到 email，时延敏感型的邮件没有即时送达就会被用户视为没有送达，所以要保证没有任何其它因素阻塞着时延敏感型的邮件。</p>
 <p>具体的编码具体是这样：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">higtPriorityEmailTask := tasks.Signature&#123;</span><br><span class="line">    RoutingKey:   <span class="string">&quot;high_priority_email_task&quot;</span>,</span><br><span class="line">    Name:         <span class="string">&quot;high_priority_email&quot;</span>,</span><br><span class="line">    RetryCount:   taskRetryCount,</span><br><span class="line">    RetryTimeout: taskRetryTimeout,</span><br><span class="line">    Args: []tasks.Arg&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// LaunchHighPriorityEmailWorker starts worker for high priority emails</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchHighPriorityEmailWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	routingKey := <span class="string">&quot;high_priority_email_task&quot;</span></span><br><span class="line">	concurrency := <span class="number">10</span></span><br><span class="line">	<span class="keyword">if</span> env.GetHighEmailWorkerConcurrency() != <span class="number">0</span> &#123;</span><br><span class="line">		concurrency = env.GetHightEmailWorkerConcurrency()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewCustomQueueWorker(</span><br><span class="line">		<span class="string">&quot;high_priority_email_queue&quot;</span>, </span><br><span class="line">		concurrency, </span><br><span class="line">		routingKey,</span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">defaultPriorityEmailTask := tasks.Signature&#123;</span><br><span class="line">    RoutingKey:   <span class="string">&quot;default_priority_email_task&quot;</span>,</span><br><span class="line">    Name:         <span class="string">&quot;default_priority_email&quot;</span>,</span><br><span class="line">    RetryCount:   taskRetryCount,</span><br><span class="line">    RetryTimeout: taskRetryTimeout,</span><br><span class="line">    Args: []tasks.Arg&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// LaunchDefaultPriorityEmailWorker starts worker for default priority emails</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">LaunchDefaultPriorityEmailWorker</span><span class="params">(server *machinery.Server)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	routingKey := <span class="string">&quot;default_priority_email_task&quot;</span></span><br><span class="line">	concurrency := <span class="number">10</span></span><br><span class="line">	<span class="keyword">if</span> env.GetDefaultEmailWorkerConcurrency() != <span class="number">0</span> &#123;</span><br><span class="line">		concurrency = env.GetDefaultEmailWorkerConcurrency()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	worker := server.NewCustomQueueWorker(</span><br><span class="line">		<span class="string">&quot;default_priority_email_queue&quot;</span>, </span><br><span class="line">		concurrency, </span><br><span class="line">		routingKey,</span><br><span class="line">	)</span><br><span class="line"></span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line">	err = worker.Launch()</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> err</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>总结一下解决问题的思路：</p>
 <ol>
-<li>异步任务由原来的单一worker扩展为多worker，将email task和非email task隔离</li>
-<li>将时延敏感型email task和非时延敏感型email task隔离</li>
-<li>提高每个worker的concurrency，比如提高到30</li>
+<li>异步任务由原来的单一 worker 扩展为多 worker，将 email task 和非 email task 隔离；</li>
+<li>将时延敏感型 email task 和非时延敏感型 email task 隔离；</li>
+<li>提高每个 worker 的 concurrency，比如提高到30。</li>
 </ol>
 
     </div>
@@ -272,8 +272,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/01/10/go-best-practice-deaing-with-db/" rel="prev" title="Go 应用和数据库打交道的最佳实践">
-      <i class="fa fa-chevron-left"></i> Go 应用和数据库打交道的最佳实践
+    <a href="/2021/01/10/go-best-practice-deaing-with-db/" rel="prev" title="Go Schema Migration And ORMs">
+      <i class="fa fa-chevron-left"></i> Go Schema Migration And ORMs
     </a></div>
       <div class="post-nav-item">
     <a href="/2021/01/22/code-review/" rel="next" title="团队如何在 Code Review 这件事上进行协作">
@@ -345,7 +345,7 @@
     <img class="site-author-image" itemprop="image" alt="破障者"
       src="/images/hotballoon.jpg">
   <p class="site-author-name" itemprop="name">破障者</p>
-  <div class="site-description" itemprop="description">不喜欢模糊的、有歧义的、不确定的、不精确的信息。</div>
+  <div class="site-description" itemprop="description">不喜欢模糊的、有歧义的、不确定的、不精确的信息传递。</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
