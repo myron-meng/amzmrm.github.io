@@ -164,6 +164,72 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://danceinstyle.github.io/2022/03/14/go-unit-testing-best-practice/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/hotballoon.jpg">
+      <meta itemprop="name" content="破障者">
+      <meta itemprop="description" content="不喜欢啰嗦的、不确定的、有歧义的、不精确的信息传递。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="破障者">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/14/go-unit-testing-best-practice/" class="post-title-link" itemprop="url">Go 单元测试技巧和实践</a>
+        </h2>
+
+        <div class="post-meta">
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="什么是单元测试"><a href="#什么是单元测试" class="headerlink" title="什么是单元测试"></a>什么是单元测试</h2><p>单元测试是对一组封装良好、实现有限特定功能的代码进行正确性检验的工作。对于面向过程编程来说，一个单元可以是一个函数；对于面向对象编程来说，一个单元就是类的方法；在 Go 中，一个 package(下称包) 就是一个单元。</p>
+<h2 id="为什么需要单元测试"><a href="#为什么需要单元测试" class="headerlink" title="为什么需要单元测试"></a>为什么需要单元测试</h2><p>相比没有单元测试的代码，有单元测试的代码具有以下优点：</p>
+<ul>
+<li>最直接的当然是提高代码的正确率和可靠性；</li>
+<li>尽早发现问题。问题越早发现，解决的难度和成本就越低；</li>
+<li>提高团队各成员之间的沟通效率。新代码未经过测试就发布到测试环境，可能会带有明显的 bug，这会制造非常多繁琐的协作流程：测试人员发现 Bug → 新建 Bug 卡 → 开发人员收到 Bug 卡后开始排查并修复 → 提交代码 → 运行 CI 流水线 → 再次发布 → 开发人员修改 Bug 卡状态 → 测试人员验证；</li>
+<li>保证重构的正确性。随着功能的增加，重构（修改老代码）几乎是无法避免的，很多时候我们没有信心做代码重构，就是因为担心重构会导致引入新的 Bug。有了单元测试，只要在改完代码后运行一下单元测试就知道改动对整个系统的影响了；</li>
+<li>优化代码设计。编写单元测试需要开发人员让自己的代码通过多个测试案例，这会驱动开发人员仔细思考代码的设计和实现，有利于开发人员加深对代码功能的理解，从而形成更合理的设计和结构；</li>
+<li>即使你不测试你写的代码，总有人会！公司的 QA 团队，甚至产品的最终用户。如果我们珍视自己辛勤开发的产品，就绝无可能（在知情的情况下，或者说不了解质量和产品可靠性的情况下）让用户为我们完成测试工作！</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/03/14/go-unit-testing-best-practice/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://danceinstyle.github.io/2022/03/14/engineering-culture-diff-between-china-and-us/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -839,7 +905,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -852,7 +918,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
