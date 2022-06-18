@@ -1,213 +1,6 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
-
-<link rel="stylesheet" href="/css/main.css">
-
-
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
-
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"danceinstyle.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
-
-  <meta name="description" content="后端应用跟数据库打交道时总要面临这些问题：  数据库如何做 schema migration 应用如何操作数据库  这里分享一下笔者最喜欢的实践方式。">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Go Schema Migration And ORMs">
-<meta property="og:url" content="https://danceinstyle.github.io/2021/01/10/go-best-practice-deaing-with-db/index.html">
-<meta property="og:site_name" content="破障者">
-<meta property="og:description" content="后端应用跟数据库打交道时总要面临这些问题：  数据库如何做 schema migration 应用如何操作数据库  这里分享一下笔者最喜欢的实践方式。">
-<meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-01-10T09:06:47.000Z">
-<meta property="article:modified_time" content="2021-10-24T09:22:29.296Z">
-<meta property="article:author" content="破障者">
-<meta property="article:tag" content="go">
-<meta property="article:tag" content="best-practice">
-<meta property="article:tag" content="database">
-<meta name="twitter:card" content="summary">
-
-<link rel="canonical" href="https://danceinstyle.github.io/2021/01/10/go-best-practice-deaing-with-db/">
-
-
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
-
-  <title>Go Schema Migration And ORMs | 破障者</title>
-  
-
-
-
-
-
-
-  <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
-
-    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
-    </div>
-  </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">破障者</h1>
-      <span class="logo-line-after"><i></i></span>
-    </a>
-      <p class="site-subtitle" itemprop="description">总是在意细节，并总是追求把细节做好。</p>
-  </div>
-
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger">
-    </div>
-  </div>
-</div>
-
-
-
-
-<nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-about">
-
-    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
-  </ul>
-</nav>
-
-
-
-
-</div>
-    </header>
-
-    
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
-
-
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
-
-          <div class="content post posts-expand">
-            
-
-    
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://danceinstyle.github.io/2021/01/10/go-best-practice-deaing-with-db/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/hotballoon.jpg">
-      <meta itemprop="name" content="破障者">
-      <meta itemprop="description" content="不喜欢啰嗦的、不确定的、有歧义的、不精确的信息传递。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="破障者">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          Go Schema Migration And ORMs
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/go/" itemprop="url" rel="index"><span itemprop="name">go</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-        <p>后端应用跟数据库打交道时总要面临这些问题：</p>
+<!DOCTYPE html><html lang="zh-CN"><head><title>Go Schema Migration And ORMs</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 5.2.0"></head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
+  document.body.classList.add('mobile')
+}</script><div><div class="inner"><h2>Go Schema Migration And ORMs</h2><p>后端应用跟数据库打交道时总要面临这些问题：</p>
 <ol>
 <li>数据库如何做 schema migration</li>
 <li>应用如何操作数据库</li>
@@ -227,8 +20,12 @@
 <li>流程繁琐：团队里的各个成员在实现功能需求时都有可能要执行 migration，SQL 语句准备好拿出来给大伙 review，通过了再交给具备执行数据库 DDL 语句权限的同事去执行。</li>
 </ol>
 <h3 id="ORM"><a href="#ORM" class="headerlink" title="ORM"></a><strong>ORM</strong></h3><p>相比手动维护有一定的优势，比如使用 gorm 我们可以这样完成 migration:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">db.AutoMigrate(&amp;User&#123;&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="go">type User struct &#123;
+    ...
+&#125;
 
+db.AutoMigrate(&amp;User&#123;&#125;)
+</code></pre>
 <p>相比书写完整的 SQL，我们只需要学习 ORM 的规则，在 struct tag 里定义好即可，而我们的 Go 后端应用本身就是一个能访问数据库的程序，让它完成 migration 也顺理成章。但是借助 ORM 来完成 migration 也有其弊端：</p>
 <ol>
 <li>我们要学习2套规则：SQL 语法和 ORM 的 migration 规则，并让它们保持一致和同步；</li>
@@ -242,15 +39,49 @@
 <li><a target="_blank" rel="noopener" href="https://github.com/golang-migrate/migrate">migrate</a></li>
 </ol>
 <p>这里以 migrate 为例，首先编写 migrate 文件：</p>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1_create_user_table.up.sql</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> <span class="keyword">users</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> AUTO_INCREMENT PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    email <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    first_name <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    last_name <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    bio <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="literal">NULL</span>,</span><br><span class="line">    headline <span class="built_in">VARCHAR</span>(<span class="number">256</span>) <span class="literal">NULL</span>,</span><br><span class="line">    age <span class="built_in">INT</span> <span class="literal">NULL</span>,</span><br><span class="line">    created_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    updated_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    deleted_at <span class="built_in">TIMESTAMP</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 1_create_user_table.down.sql</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`users`</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2_create_transactions_table.up.sql</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> transactions</span><br><span class="line">(</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> AUTO_INCREMENT PRIMARY <span class="keyword">KEY</span>,</span><br><span class="line">    user_id <span class="built_in">BIGINT</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    created_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line">    updated_at <span class="built_in">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="keyword">CURRENT_TIMESTAMP</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="keyword">CURRENT_TIMESTAMP</span>,</span><br><span class="line">    deleted_at <span class="built_in">TIMESTAMP</span> <span class="literal">NULL</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2_create_transactions_table.down.sql</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> <span class="string">`transactions`</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="sql"># 1_create_user_table.up.sql
+CREATE TABLE IF NOT EXISTS users
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(256) NOT NULL,
+    first_name VARCHAR(256) NOT NULL,
+    last_name VARCHAR(256) NOT NULL,
+    bio VARCHAR(256) NULL,
+    headline VARCHAR(256) NULL,
+    age INT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+);
 
+# 1_create_user_table.down.sql
+DROP TABLE IF EXISTS `users`;
+
+# 2_create_transactions_table.up.sql
+CREATE TABLE IF NOT EXISTS transactions
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL
+);
+
+# 2_create_transactions_table.down.sql
+DROP TABLE IF EXISTS `transactions`;
+</code></pre>
 <p>migrate 要求我们为每个 migration 编写 up 和 down 文件，up 文件将数据库 schema 从一个版本升级到另一个版本，down 文件则会将数据库 schema 从一个版本降到另一个版本。</p>
 <p>执行 migrate：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">❯ <span class="built_in">cd</span> sql</span><br><span class="line"><span class="comment"># 把user_name、password和db_name替换成你自己的</span></span><br><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> up</span><br><span class="line">1/u create_users_table (38.456467ms)</span><br><span class="line">2/u create_transactions_table (79.320577ms)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">❯ cd sql
+# 把user_name、password和db_name替换成你自己的
+❯ migrate -database &quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot; -path &quot;sql&quot; up
+1/u create_users_table (38.456467ms)
+2/u create_transactions_table (79.320577ms)
+</code></pre>
 <p>如果你要回退：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">❯ migrate -database <span class="string">&quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot;</span> -path <span class="string">&quot;sql&quot;</span> down 1</span><br><span class="line">2/d create_transactions_table (12.098781ms)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">❯ migrate -database &quot;mysql://user_name:password@tcp(127.0.0.1:3306)/db_name&quot; -path &quot;sql&quot; down 1
+2/d create_transactions_table (12.098781ms)
+</code></pre>
 <p><code>down 1</code> 表示回退一个版本。当前版本是2，因此回退要做的工作就是执行 version=2 的 down 文件，让 schema 回到 <code>version=1</code> 这个版本，因此 <code>transactions</code> 表会被删除。down 会删除表、字段，请慎用！</p>
 <p>使用 migration 工具日常的开发流程：</p>
 <ol>
@@ -277,11 +108,21 @@
 <li>基于代码生成而不是反射，性能比 gorm 好，详细参见 <a target="_blank" rel="noopener" href="https://github.com/volatiletech/sqlboiler#benchmarks">Benchmarks</a></li>
 </ol>
 <p>使用 sqlboiler，我们要做的首先是配置好代码生成：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">output</span>   <span class="string">=</span> <span class="string">&quot;models&quot;</span> <span class="comment"># 自定义生成的model代码所在包</span></span><br><span class="line"><span class="string">wipe</span>     <span class="string">=</span> <span class="literal">true</span></span><br><span class="line"><span class="literal">no</span><span class="string">-tests</span> <span class="string">=</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">[<span class="string">mysql</span>]</span><br><span class="line"><span class="string">dbname</span>  <span class="string">=</span> <span class="string">&quot;db_name&quot;</span></span><br><span class="line"><span class="string">host</span>    <span class="string">=</span> <span class="string">&quot;localhost&quot;</span></span><br><span class="line"><span class="string">port</span>    <span class="string">=</span> <span class="number">3306</span></span><br><span class="line"><span class="string">user</span>    <span class="string">=</span> <span class="string">&quot;root&quot;</span></span><br><span class="line"><span class="string">pass</span>    <span class="string">=</span> <span class="string">&quot;123456&quot;</span></span><br><span class="line"><span class="string">sslmode</span> <span class="string">=</span> <span class="string">&quot;false&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<pre><code class="yaml">output   = &quot;models&quot; # 自定义生成的model代码所在包
+wipe     = true
+no-tests = true
 
+[mysql]
+dbname  = &quot;db_name&quot;
+host    = &quot;localhost&quot;
+port    = 3306
+user    = &quot;root&quot;
+pass    = &quot;123456&quot;
+sslmode = &quot;false&quot;
+</code></pre>
 <p>然后生成代码：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sqlboiler -p models mysql</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
+<pre><code class="bash">sqlboiler -p models mysql
+</code></pre>
 <h3 id="sqlboiler-vs-gorm"><a href="#sqlboiler-vs-gorm" class="headerlink" title="sqlboiler vs gorm"></a>sqlboiler vs gorm</h3><p>sqlboiler 和 gorm 最大的不同在于 sqlboiler 是 type-safe 的，gorm 不是。sqlboiler 为我们生成了：</p>
 <ol>
 <li>models.TableNames.TableName</li>
@@ -290,8 +131,18 @@
 <li>models.ModelRels.ForeignTableName</li>
 </ol>
 <p>当 gorm 使用字符串字面量去指定表名、字段名时，sqlboiler 可以使用代码生成的变量：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// sqlboiler</span></span><br><span class="line">user, err = models.Users(models.UserWhere.Age.EQ(null.IntFrom(<span class="number">18</span>))).One(context.TODO(), db)</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// gorm</span></span><br><span class="line"><span class="keyword">var</span> user models.User</span><br><span class="line">err = db.Where(<span class="string">&quot;age = ?&quot;</span>, <span class="number">18</span>).First(&amp;user).Error</span><br><span class="line"><span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> err</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code class="go">// sqlboiler
+user, err = models.Users(models.UserWhere.Age.EQ(null.IntFrom(18))).One(context.TODO(), db)
+if err != nil &#123;
+    return err
+&#125;
 
+// gorm
+var user models.User
+err = db.Where(&quot;age = ?&quot;, 18).First(&amp;user).Error
+if err != nil &#123;
+    return err
+&#125;</code></pre>
 <p>没有 type-safe，失去很多能力：</p>
 <ol>
 <li>表名、字段名拼写错误无法提前知道，只有在代码运行出错时才知道；</li>
@@ -306,206 +157,7 @@
 <li>因为代码生成，自动补全功能可提高工作效率。</li>
 </ol>
 <h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>因为没有范型，Go 无法实现一个“好用的” ORM。Go 后端服务生态里，gorm 选择了 <code>interface&#123;&#125; + 反射</code> 这条路，没有提供 type-safe；sqlboiler 选择了代码生成这条路，具备 type-safe。选择使用哪一个，取决于你是否需要 type-safe，如果 type-safe 对你来说非常重要，你需要借助工具尽最大可能减少人类的差错，那么 sqlboiler 是一个好选择；如果易用性对你来说最重要，typs-safe 没那么重要，单词拼写错误、类型不对什么的，交给单元测试和 code review 去挡着，那么 gorm 可能适合你。</p>
-
-    </div>
-
-    
-    
-    
-
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/go/" rel="tag"># go</a>
-              <a href="/tags/best-practice/" rel="tag"># best-practice</a>
-              <a href="/tags/database/" rel="tag"># database</a>
-          </div>
-
-        
-
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/2020/10/07/try-tencent-cloud-serverless/" rel="prev" title="Go 使用腾讯云 Serverless-Framework 开发 API">
-      <i class="fa fa-chevron-left"></i> Go 使用腾讯云 Serverless-Framework 开发 API
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/2021/01/11/why-users-not-receiving-verification-code-emails/" rel="next" title="用户为什么没收到 email 验证码">
-      用户为什么没收到 email 验证码 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
-          </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Migration"><span class="nav-number">1.</span> <span class="nav-text">Migration</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E7%BB%B4%E6%8A%A4"><span class="nav-number">1.1.</span> <span class="nav-text">手动维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ORM"><span class="nav-number">1.2.</span> <span class="nav-text">ORM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#migration-%E5%B7%A5%E5%85%B7"><span class="nav-number">1.3.</span> <span class="nav-text">migration 工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORM-1"><span class="nav-number">2.</span> <span class="nav-text">ORM</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#sqlboiler-vs-gorm"><span class="nav-number">2.1.</span> <span class="nav-text">sqlboiler vs gorm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.2.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-    <img class="site-author-image" itemprop="image" alt="破障者"
-      src="/images/hotballoon.jpg">
-  <p class="site-author-name" itemprop="name">破障者</p>
-  <div class="site-description" itemprop="description">不喜欢啰嗦的、不确定的、有歧义的、不精确的信息传递。</div>
-</div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">10</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">4</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">7</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
-</div>
-
-
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
-
-<div class="copyright">
-  
-  &copy; 
-  <span itemprop="copyrightYear">2022</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">破障者</span>
-</div>
-  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
-  </div>
-
-        
-
-
-
-
-
-
-
-
-      </div>
-    </footer>
-  </div>
-
-  
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
-
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
-
-
-<script src="/js/next-boot.js"></script>
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  
-
-</body>
-</html>
+</div></div></body><script src="/js/highlight.min.js"></script><script src="/js/main.js"></script><script src="/js/bootstrap/bootstrap.min.js"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '');</script></html>
