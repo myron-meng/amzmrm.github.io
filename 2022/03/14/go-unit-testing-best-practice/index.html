@@ -284,7 +284,7 @@ type FakeUserRepository struct &#123;
     Users []*model.User
 &#125;
 
-func (r *FakeUserRepository) SelectOne(ctx context.Context, id int64) (*model.User, error) &#123;
+func (r *FakeUserRepository) SelectOne(ctx context.Context, id int6$$4) (*model.User, error) &#123;
     for i := range r.Users &#123;
         if r.Users[i].ID == id &#123;
             return r.Users[i], nil
