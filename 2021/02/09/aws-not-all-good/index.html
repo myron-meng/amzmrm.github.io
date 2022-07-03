@@ -1,12 +1,12 @@
 <!DOCTYPE html><html lang="zh-CN"><head><title>在这两点上国内云服务比 AWS 好用！</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 5.2.0"></head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
   document.body.classList.add('mobile')
 }</script><div><div class="inner"><h2>在这两点上国内云服务比 AWS 好用！</h2><p>公司是 AWS 云服务的客户，所有的应用服务都是部署在 AWS 上。作为云服务行业的龙头，AWS 确实是一个非常好的选择，它的优势包括但不限于：</p>
-<ol>
-<li>各种服务设施齐全</li>
-<li>文档和 SDK 完善齐全并且专业</li>
-<li>技术支持和服务及时且周到</li>
-<li>对创业公司的支持也非常好（startup 可享受1年的减免，每个月可减免的费用在1w~2w美元）</li>
-</ol>
+<ul>
+<li>各种服务设施齐全；</li>
+<li>文档和 SDK 完善齐全并且专业；</li>
+<li>技术支持和服务及时且周到；</li>
+<li>对创业公司的支持也非常好（startup 可享受1年的减免，每个月可减免的费用在1w~2w美元）；</li>
+</ul>
 <p>但是AWS也不是完美的，在某些功能或者小细节上国内的云服务厂商做得更好，比如我这里要谈的：</p>
 <a id="more"></a>
 
@@ -14,25 +14,25 @@
 <li>图片处理功能</li>
 <li>获取媒体元数据</li>
 </ol>
-<h3 id="图片处理"><a href="#图片处理" class="headerlink" title="图片处理"></a>图片处理</h3><p>我们的应用有一个用户个人信息页面展示个人头像，还有一个好友列表功能展示用户的好友们的姓名、头像等信息。为了高效地渲染用户头像，我们需要给头像生成 thumbnail，因为现在的手机拍出来的照片动辄几个 MB 的 size，4032 × 3024 的 dimension，如果渲染原图的话我们的 app 肯定会遇到图片加载慢、卡顿、造成手机发热量增大、数据流量消耗过多等问题。</p>
-<p>显示图片缩略图是一个非常高频的使用场景，但 AWS 偏偏就没有一个方便的解决方案，Google 一番后发现解决方案有：</p>
+<h3 id="图片处理"><a href="#图片处理" class="headerlink" title="图片处理"></a>图片处理</h3><p>我们的应用有一个用户个人信息页面展示个人头像，还有一个好友列表功能展示用户的好友们的姓名、头像等信息。为了高效地渲染用户头像，我们需要给头像生成 thumbnail，因为现在的手机拍出来的照片动辄几 MB 的文件大小、4032 × 3024 的宽高，如果渲染原图的话， app 的用户会遇到图片加载慢、列表卡顿、造成手机发热量增大、数据流量消耗过多等问题。</p>
+<p>因此图片缩略图是刚需，但 AWS 就没有一个方便的解决方案，Google 一番后发现解决方案有：</p>
 <ul>
-<li>方案0：让用户上传的图片先经过我们的服务器，然后服务器同步地做：利用原图生成 thumbnail、存储原图和 thumbnail 到 s3；</li>
-<li>方案1：如这篇 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/compute/resize-images-on-the-fly-with-amazon-s3-aws-lambda-and-amazon-api-gateway/">blog</a> 所述，在用户上传图片时使用 AWS Lambda 结合 s3 event 去生成 thumbnail；</li>
-<li>方案2：如这篇 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog/">blog</a> 所述，使用 CloudFront &amp; Lambda@Edge 在用户请求 thumbnail 时没有的话先生成一个，生成成功后再存在 s3 再返回；</li>
+<li>方案0：让用户上传的图片先经过我们的服务器，然后服务器同步地做：利用原图生成 thumbnail =&gt; 存储原图和 thumbnail 到 s3；</li>
+<li>方案1：如这篇 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/compute/resize-images-on-the-fly-with-amazon-s3-aws-lambda-and-amazon-api-gateway/">文章</a> 所述，在用户上传图片时使用 AWS Lambda 结合 s3 event 去生成缩略图；</li>
+<li>方案2：如这篇 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog/">文章</a> 所述，使用 CloudFront &amp; Lambda@Edge 在用户请求图片时没有缩略图的话先生成一个，生成成功后再存在 s3 再返回；</li>
 <li>方案3：<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/45120247/how-to-store-image-thumbnail-on-aws-s3">Stackoverflow</a> 使用额外的收费服务 <a target="_blank" rel="noopener" href="http://cloudinary.com/">Cloudinary</a> 或者 <a target="_blank" rel="noopener" href="http://imgix.com/">Imgix</a></li>
 </ul>
-<p>我们不太可能选择方案0，因为现在用户上传的图片一般是直传存储桶而不会经过我们的 backend。这个方案需要在用户上传图片的时候做很多事情：生成 thumbnail、上传 thumbnail + 原图到存储桶、数据库记录媒体资源，因此上传照片的接口的 latency 会差强人意，用户体验不好。</p>
-<p>方案1也不太可能，因为我们不知道 Lambda function 什么时候完成这个事情，完成之后还得把“完成了”这个状态持久化，这样才能通知client-side 可以放心使用 thumbnail，在这之前 client side 还是得使用原图，太麻烦。</p>
+<p>我们不太可能选择方案 0，因为现在用户上传的图片一般是直传对象存储而不会经过后端。这个方案需要在用户上传图片的时候做很多事情：生成缩略图、上传缩略图 + 原图到对象存储、数据库记录媒体资源，因此上传照片的接口的性能会差强人意，用户体验不好。</p>
+<p>方案 1 也不太可能，因为我们不知道 Lambda function 什么时候完成这个事情，完成之后还得把“完成了”这个状态持久化，这样才能通知客户端可以放心使用缩略图，在这之前客户端还是得使用原图，太麻烦。</p>
 <p>方案3也不是个好的解决方案，因为我们要购买和引进新的服务，增加了系统依赖的实体，也增加了复杂性。</p>
-<p>因此看出来只能选择方案2了。但是这个方案也不是完美的，它最少会要求有1次 Lambda 调用，最多会有2次 Lambda 调用，而 Lambda 函数有冷启动问题，这导致了图片的加载速度还是没有想象中的好。</p>
+<p>因此看出来只能选择方案 2 了。但是这个方案也不是完美的，它最少会要求有1次 Lambda 调用，最多会有2次 Lambda 调用，而 Lambda 函数有冷启动问题，这导致了图片的加载速度还是没有想象中的好。</p>
 <p>再来看看国内的云服务是怎么解决这个问题的，以腾讯云的<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/460">数据万象</a>服务为例（七牛云和阿里云也有类似的服务），数据万象支持缩放功能：</p>
 <p><img src="/images/image-20210209022713000.png"></p>
 <p>如何使用呢？假设我们有这样一张图片在存储桶里：</p>
 <p><code>https://sls-cloudfunction-ap-guangzhou-code-xxx.cos.ap-guangzhou.myqcloud.com/kuyU4lFr.jpg</code></p>
 <p>如果要加载这张图片尺寸为 100x100 的缩略图，只需要在 url 后面加上<code>?imageMogr2/thumbnail/100x/interlace/1</code>即可。</p>
 <p>腾讯云服务提供的解决方案简直就是秒杀了 AWS 的方案！当然了，腾讯云的<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/460">数据万象</a>服务可不仅仅是生成缩略图，还是很多其它功能，感兴趣的读者可以去探索探索。</p>
-<h3 id="媒体元数据"><a href="#媒体元数据" class="headerlink" title="媒体元数据"></a>媒体元数据</h3><p>在负责公司应用的直播录屏的处理。公司使用的是声网 Agora 的音视频直播服务，Agora 将录制视频上传到 s3 后，需要做的操作有：获取录制的时长、大小、裁剪。AWS Elemental Media 服务提供很多媒体处理的功能，但没有提供提取 media metadata 的功能。最后我们得实现一个 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/media/running-mediainfo-as-an-aws-lambda-function/">lambda function</a>，这个 function 会使用 mediainfo 去提取媒体文件的 metadata。</p>
+<h3 id="媒体元数据"><a href="#媒体元数据" class="headerlink" title="媒体元数据"></a>媒体元数据</h3><p>在负责公司应用的直播录屏的处理，公司使用的是声网 Agora 的音视频直播服务，Agora 将录制视频上传到 s3 后，需要做的操作有：获取录制的时长、大小、裁剪。AWS Elemental Media 服务提供很多媒体处理的功能，但没有提供提取 media metadata 的功能。最后我们得实现一个 <a target="_blank" rel="noopener" href="https://aws.amazon.com/cn/blogs/media/running-mediainfo-as-an-aws-lambda-function/">lambda function</a>，这个 function 会使用 mediainfo 去提取媒体文件的 metadata。</p>
 <p>腾讯云的音视频处理服务则提供了简单直接的方案：<a target="_blank" rel="noopener" href="https://cloud.tencent.com/document/product/862/40637">获取媒体元信息</a>。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>AWS 是云服务行业的领头羊，它提供了完善的基础设施，你可以使用这些基础设施实现所有你需要的功能，但是有些时候你不得不花费一些力气。同领域的竞争者同时也奋起拼搏，差异化、微创新都是追赶的方式。</p>
 </div></div></body><script src="/js/highlight.min.js"></script><script src="/js/main.js"></script><script src="/js/bootstrap/bootstrap.min.js"></script><script>window.dataLayer = window.dataLayer || [];

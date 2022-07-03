@@ -9,7 +9,7 @@
 <li>函数可以有多个返回值，如果函数要返回错误，那么最佳实践是把错误放在多个返回值中的最后一个，形如这个函数签名：<code>func func1() (int, int, error)</code>。这一点非常显而易见，以至于很多人常常忽略掉这个特性在错误处理中的存在。</li>
 </ol>
 <p>这也是其它语言的用户使用 Go 语言时经常谈到的（好的、坏的），有人会认为这种处理方式导致代码里有太多繁琐的、重复的 <code>if err ≠ nil &#123;&#125;</code>。关于如何处理错误的讨论有很多，这个话题也成为了很多演讲者的演讲主题。本文由浅入深，总结一下错误处理的经验。</p>
-<h1 id="Error-的处理策略"><a href="#Error-的处理策略" class="headerlink" title="Error 的处理策略"></a>Error 的处理策略</h1><p>Go 代码中常见的错误处理策略有三种：</p>
+<h2 id="Error-的处理策略"><a href="#Error-的处理策略" class="headerlink" title="Error 的处理策略"></a>Error 的处理策略</h2><p>Go 代码中常见的错误处理策略有三种：</p>
 <ol>
 <li>Sentinel errors</li>
 <li>Error types</li>
