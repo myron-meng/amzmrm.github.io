@@ -12,7 +12,7 @@
 </ol>
 <p>开始吧。</p>
 <h2 id="运行-tus-服务器端"><a href="#运行-tus-服务器端" class="headerlink" title="运行 tus 服务器端"></a>运行 tus 服务器端</h2><p><a target="_blank" rel="noopener" href="https://tus.io/">tus</a> 协议提供了一个使用 Go 语言实现的服务器端，因此要运行一个 tus 服务器端是非常方便的，可以克隆并运行 <a target="_blank" rel="noopener" href="https://github.com/tus/tusd">tusd</a> 仓库的代码，也直接下载并运行编译好的<a target="_blank" rel="noopener" href="https://github.com/tus/tusd/releases">二进制文件</a>。</p>
-<h2 id="创建上传会话"><a href="#创建上传会话" class="headerlink" title="创建上传会话"></a>创建上传会话</h2><p>首先要做的是请求 tus 服务器，创建一个上传会话：</p>
+<h2 id="创建上传会话"><a href="#创建上传会话" class="headerlink" title="创建上传会话"></a>创建上传会话</h2><p>tus 服务器端启动后，接着要做的是向 tus 服务器发起请求，创建一个上传会话：</p>
 <pre><code class="shell">curl --location --request POST &#39;http://127.0.0.1:8080/files/&#39; \
     --header &#39;Tus-Resumable: 1.0.0&#39; \
     --header &#39;Content-Type: application/offset+octet-stream&#39; \
