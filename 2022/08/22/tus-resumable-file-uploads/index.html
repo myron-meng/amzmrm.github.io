@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="zh-CN"><head><title>tus 文件续传/分片上传协议</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 5.2.0"></head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
+  document.body.classList.add('mobile')
+}</script><div><div class="inner"><h2>tus 文件续传/分片上传协议</h2><p>本文演示使用 <a target="_blank" rel="noopener" href="https://tus.io/">tus</a> 协议实现文件续传/分片上传方案。tus 是一种基于 HTTP 的 <a target="_blank" rel="noopener" href="https://tus.io/protocols/resumable-upload.html">文件续传开放协议</a>，它为客户端和服务器提供了简单、方便和可重用的技术栈，支持任何语言、任何平台和任何网络。</p>
+<p>我会使用 <a target="_blank" rel="noopener" href="https://curl.se/">curl</a> 并结合 <a target="_blank" rel="noopener" href="https://man7.org/linux/man-pages/man1/dd.1.html">dd</a> （dd 工具将标准输入复制到标准输出，读取标准输入时可以控制读取的数据量和偏移位置）演示如何分片地上传一个文件名为 big-buck-bunny.mp4， 文件大小为 5890088 字节（即 5.6M）的 mp4 视频，整个上传过程会有多次 HTTP 请求。为了达到演示分片上传的目的，我会以 1048576 字节（即 1M） 为片大小对文件进行“切分”，将 big-buck-bunny.mp4 分成 6 片依次上传：</p>
+<ol>
+<li>[0, 1048576)</li>
+<li>[1048576, 2097152)</li>
+<li>[2097152, 3145728)</li>
+<li>[3145728, 4194304)</li>
+<li>[4194304, 5242880)</li>
+<li>[5242880, 5890088)</li>
+</ol>
+<p>开始吧。</p>
+<h2 id="创建上传会话"><a href="#创建上传会话" class="headerlink" title="创建上传会话"></a>创建上传会话</h2><p>首先要做的是请求 tus 服务器（运行实现了 tud 协议的服务端，比如 <a target="_blank" rel="noopener" href="https://github.com/tus/tusd">tusd</a> ，或者运行<a target="_blank" rel="noopener" href="https://github.com/tus/tusd/releases">二进制文件</a>），创建一个上传会话：</p>
+<pre><code class="shell">curl --location --request POST &#39;http://127.0.0.1:8080/files/&#39; \
+    --header &#39;Tus-Resumable: 1.0.0&#39; \
+    --header &#39;Content-Type: application/offset+octet-stream&#39; \
+    --header &#39;Upload-Length: 5890088&#39; \
+    --header &#39;Upload-Metadata: filename YmlnLWJ1Y2stYnVubnkubXA0Cg==,filetype dmlkZW8vbXA0&#39; \
+    -i</code></pre>
+<p>参数说明：</p>
+<ul>
+<li><p><code>--header &#39;Tus-Resumable: 1.0.0&#39;</code> 指定要使用的 tus 协议版本，目前仅有 1.0.0 可供使用。</p>
+</li>
+<li><p><code>--header &#39;Content-Type: application/offset+octet-stream&#39;</code> 固定值。</p>
+</li>
+<li><p><code>--header &#39;Upload-Length: 5890088&#39;</code> 指定要上传的文件的大小，单位是字节。</p>
+</li>
+<li><p><code>--header &#39;Upload-Metadata: filename YmlnLWJ1Y2stYnVubnkubXA0Cg==,filetype dmlkZW8vbXA0&#39;</code> 指定 base64 编码后的文件名和文件类型，使用 <code>,</code> 分隔多个键值对，使用 <code>空格 </code>分隔键和值。此处指定了 filename 为 big-buck-bunny.mp4 (将 YmlnLWJ1Y2stYnVubnkubXA0Cg== 进行 base64 解码后得到) 的文件，此文件的 filetype 为 video/mp4 (将 dmlkZW8vbXA0 进行base64 进行解码后得到)。</p>
+</li>
+</ul>
+<p>命令执行结果：</p>
+<pre><code class="shell">HTTP/1.1 201 Created
+Location: http://127.0.0.1:8080/files/465dd261ba3e781d814694b1af2367ad
+Tus-Resumable: 1.0.0
+Upload-Offset: 0
+X-Content-Type-Options: nosniff
+Date: Mon, 22 Aug 2022 10:04:37 GMT
+Content-Length: 0</code></pre>
+<p>注意请求的响应头部，其中 <code>Location</code> 即服务器创建的上传会话 URL，我们需要将文件上传到此。</p>
+<h2 id="获取上传进度"><a href="#获取上传进度" class="headerlink" title="获取上传进度"></a>获取上传进度</h2><p>在上传结束前，我们可以在任意时刻使用 HEAD 方法请求上传会话 URL 获取当前的上传进度：</p>
+<pre><code class="shell">curl --location --head &#39;http://127.0.0.1:8080/files/465dd261ba3e781d814694b1af2367ad&#39; \
+    --header &#39;Tus-Resumable: 1.0.0&#39; \
+    -i</code></pre>
+<p>命令执行结果：</p>
+<pre><code class="shell">HTTP/1.1 200 OK
+Cache-Control: no-store
+Content-Length: 5890088
+Tus-Resumable: 1.0.0
+Upload-Length: 5890088
+Upload-Metadata: filetype dmlkZW8vbXA0,filename YmlnLWJ1Y2stYnVubnkubXA0Cg==
+Upload-Offset: 0
+X-Content-Type-Options: nosniff
+Date: Mon, 22 Aug 2022 10:04:57 GMT</code></pre>
+<p>其中，我们要注意的是：</p>
+<ul>
+<li><code>Content-Length</code> 表示要上传的文件的大小。</li>
+<li><code>Upload-Offset</code> 表示当前服务器已经接收并保存了的文件内容大小。</li>
+</ul>
+<h2 id="首片上传"><a href="#首片上传" class="headerlink" title="首片上传"></a>首片上传</h2><p>使用 PATCH 方法上传文件内容：</p>
+<pre><code class="shell">dd if=/Users/Myron/Videos/big-buck-bunny.mp4 bs=1048576 count=1 | curl --location --request PATCH &#39;http://127.0.0.1:8080/files/465dd261ba3e781d814694b1af2367ad&#39; \
+    --header &#39;Tus-Resumable: 1.0.0&#39; \
+    --header &#39;Content-Type: application/offset+octet-stream&#39; \
+    --header &#39;Upload-Offset: 0&#39; \
+    --data-binary @- \
+    -i</code></pre>
+<p>为了演示分片上传，我们需要使用 <code>dd</code> 命令行工具，<code>dd if=/Users/Myron/Videos/big-buck-bunny.mp4 bs=1048576 count=1</code> 中：</p>
+<ul>
+<li><code>if</code> 即 input file，指定输入文件</li>
+<li><code>bs</code> 即 block size，指定读取的内容块的大小</li>
+<li><code>count</code> 指定读取多少块</li>
+</ul>
+<p>所以这行命令所做的操作是读取  /Users/Myron/Videos/big-buck-bunny.mp4 文件的头 1048576 个字节。</p>
+<p>值得一提的是，<code>--data-binary @-</code> 使用 <code>@-</code> 告诉 curl 从 stdin 获取文件内容。</p>
+<p>命令执行结果：</p>
+<pre><code class="shell">1+0 records in
+1+0 records out
+1048576 bytes transferred in 0.005135 secs (204201753 bytes/sec)
+HTTP/1.1 204 No Content
+Tus-Resumable: 1.0.0
+Upload-Offset: 1048576
+X-Content-Type-Options: nosniff
+Date: Mon, 22 Aug 2022 10:05:31 GMT</code></pre>
+<p>请求结果同样是以响应头部的方式返回，比较值得注意的是 <code>Upload-Offset</code>，它告诉我们服务器已接收并保存的内容的偏移位置。</p>
+<h2 id="后续片段上传"><a href="#后续片段上传" class="headerlink" title="后续片段上传"></a>后续片段上传</h2><p>前一步我们上传了第一片，接下来上传第二片：</p>
+<pre><code class="shell">dd if=/Users/Myron/Videos/big-buck-bunny.mp4 bs=1048576 count=1 skip=1 | curl --location --request PATCH &#39;http://127.0.0.1:8080/files/465dd261ba3e781d814694b1af2367ad&#39; \
+    --header &#39;Tus-Resumable: 1.0.0&#39; \
+    --header &#39;Content-Type: application/offset+octet-stream&#39; \
+    --header &#39;Upload-Offset: 1048576&#39; \
+    --data-binary @- \
+    -i</code></pre>
+<p>跟首片上传不同的是，后续片段的上传每次都得修改以下参数：</p>
+<ul>
+<li><code>dd</code> 命令部分加上了 <code>skip=1</code>，因为前一步我们已经上传了第一片，所以需要跳过一片以避免上传重复的内容。</li>
+<li><code>--header &#39;Upload-Offset: 1048576&#39;</code> 指定此次即将要上传的内容在整个文件中的偏移位置。</li>
+</ul>
+<p>命令执行结果：</p>
+<pre><code class="shell">1+0 records in
+1+0 records out
+1048576 bytes transferred in 0.007448 secs (140786251 bytes/sec)
+HTTP/1.1 204 No Content
+Tus-Resumable: 1.0.0
+Upload-Offset: 2097152
+X-Content-Type-Options: nosniff
+Date: Mon, 22 Aug 2022 10:07:06 GMT</code></pre>
+<p>可以看到，每次上传成功，服务器总会通过 <code>Upload-Offset</code> 告知客户端已接收并保存的内容的偏移位置。</p>
+<p>省略中间片段的上传部分，我们直接看最后一个片段的上传：</p>
+<pre><code class="shell">dd if=/Users/Myron/Videos/big-buck-bunny.mp4 bs=1048576 count=1 skip=5 | curl --location --request PATCH &#39;http://127.0.0.1:8080/files/465dd261ba3e781d814694b1af2367ad&#39; \
+    --header &#39;Tus-Resumable: 1.0.0&#39; \
+    --header &#39;Content-Type: application/offset+octet-stream&#39; \
+    --header &#39;Upload-Offset: 5242880&#39; \
+    --data-binary @- \
+    -i</code></pre>
+<p>命令执行结果：</p>
+<pre><code class="shell">0+1 records in
+0+1 records out
+647208 bytes transferred in 0.004371 secs (148068634 bytes/sec)
+HTTP/1.1 204 No Content
+Tus-Resumable: 1.0.0
+Upload-Offset: 5890088
+X-Content-Type-Options: nosniff
+Date: Mon, 22 Aug 2022 10:08:44 GMT</code></pre>
+<p>随着最后一个字节上传成功后，上传流程也就自动完成了。</p>
+<h2 id="下载文件"><a href="#下载文件" class="headerlink" title="下载文件"></a>下载文件</h2><p>文件上传成功后，使用 GET 方法下载文件：</p>
+<pre><code class="shell">curl --location --request GET &#39;http://127.0.0.1:8080/files/465dd261ba3e781d814694b1af2367ad&#39; \
+    --header &#39;Tus-Resumable: 1.0.0&#39; \
+    --output big-buck-bunny.mp4</code></pre>
+<h2 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h2><p>如果要中途取消上传操作，可以使用 DELETE 方法删除文件：</p>
+<pre><code class="shell">curl --location --request DELETE &#39;http://127.0.0.1:8080/files/1db503e46df5228c37fa7daea67b88af&#39; \
+--header &#39;Tus-Resumable: 1.0.0&#39; \
+-i</code></pre>
+<p>命令执行结果：</p>
+<pre><code class="shell">HTTP/1.1 204 No Content
+Tus-Resumable: 1.0.0
+X-Content-Type-Options: nosniff
+Date: Mon, 22 Aug 2022 09:10:08 GMT</code></pre>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><a target="_blank" rel="noopener" href="https://tus.io/">tus</a> 是一个非常优雅的文件续传协议，最为巧妙的是它通过严格实现了 REST 风格的众多 API：</p>
+<ul>
+<li>使用 POST 创建上传会话</li>
+<li>使用 HEAD 查看上传进度</li>
+<li>使用 PATCH 上传部分内容</li>
+<li>使用 GET 获取上传后的文件</li>
+<li>使用 DELETE 取消上传</li>
+</ul>
+<p>支持完成文件上传的整个流程，而且：</p>
+<ul>
+<li>使用 <code>/files</code> （名词复数形式）表示文件资源集合的 API endpoint</li>
+<li>使用 <code>/files/:id</code> 表示一个文件资源</li>
+<li>API 严格与对应的 HTTP Method 结合使用</li>
+</ul>
+<p>阅读完它的协议后，只感觉内心无比舒适。</p>
+</div></div></body><script src="/js/highlight.min.js"></script><script src="/js/main.js"></script><script src="/js/bootstrap/bootstrap.min.js"></script><script>window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '');</script></html>
