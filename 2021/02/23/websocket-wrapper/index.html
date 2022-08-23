@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="zh-CN"><head><title>Go 封装 WebSocket，让开发 WebSocket API 变得更简单</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 5.2.0"></head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
+<!DOCTYPE html><html lang="zh-CN"><head><title>Go WebSocket API 开发</title><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta name="viewport" content="width=device-width, initial-scale=0.5"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/css/highlight/xcode.min.css"><link rel="stylesheet" href="/css/bootstrap/bootstrap-tooltips.css"><link rel="stylesheet" href="/css/post.css"><script src="/js/jquery.min.js"></script><meta name="generator" content="Hexo 5.2.0"></head><body><script>if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent)) {
   document.body.classList.add('mobile')
-}</script><div><div class="inner"><h2>Go 封装 WebSocket，让开发 WebSocket API 变得更简单</h2><p>负责开发过一个非常有趣的实时在线匿名社交小程序，它的玩法是这样的：</p>
+}</script><div><div class="inner"><h2>Go WebSocket API 开发</h2><p>负责开发过一个非常有趣的实时在线匿名社交小程序，它的玩法是这样的：</p>
 <ol>
 <li>用户上线后可以向感兴趣的对象发起配对请求，对方同意后就可以开始聊天。用户每次只能和一个对象配对，如果要换人的话需要先解除配对。</li>
 <li>用户可以选择多个匹配模式：默认、附近的人、喜欢相同音乐的人、手机电量、发的照片的标签。用户在小程序左右滑动即可切换模式，且只会看到跟自己同模式的候选对象。</li>
